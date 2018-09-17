@@ -15,8 +15,8 @@
 	1.2.7 Favorite song
 1.3 Profile View actions
 	1.3.1 Follow/Unfollow artist
-		1.3.2 Click from list of songs to play
-	1.4 Main Activity Functionality
-		1.4.1 Select a tab for hot/trending/new/subscribed/favorited
-		1.4.2 Select a song from list of songs
-		1.4.3 Select from a list of tags indicating different genres
+	1.3.2 Click from list of songs to play
+1.4 Main Activity Functionality
+	1.4.1 Select a tab for hot/trending/new/subscribed/favorited
+	1.4.2 Select a song from list of songs
+	1.4.3 Select from a list of tags indicating different genres
