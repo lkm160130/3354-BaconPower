@@ -8,8 +8,7 @@
 1.2 Music player Actions
 	1.2.1 Pause/Play/scroll through song
 	1.2.2 Like/Dislike song
-	1.2.3 Add comment 
-	1.2.4 View comments
+	1.2.3 Add/View comments
 	1.2.5 Download song/add to playlist
 	1.2.6 Follow/Unfollow artist
 	1.2.7 Favorite song
