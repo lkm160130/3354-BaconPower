@@ -8,11 +8,11 @@
 1.2 Music player Actions
 	1.2.1 Pause/Play/scroll through song
 	1.2.2 Like/Dislike song (optional)
-	1.2.3 Add (optional) /View comments
-	1.2.5 Download song (optional)
-	1.2.6 Add to playlist
-	1.2.7 Follow/Unfollow artist (optional)
-	1.2.8 Favorite song
+	1.2.3 Add (optional) / View comments
+	1.2.4 Download song (optional)
+	1.2.5 Add to playlist
+	1.2.6 Follow/Unfollow artist (optional)
+	1.2.7 Favorite song
 1.3 Profile View actions
 	1.3.1 Follow/Unfollow artist (optional)
 	1.3.2 Click from list of songs to play
