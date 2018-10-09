@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parentLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:background="@color/colorForeground">
+
+    <ImageView
+        android:id="@+id/albumCover"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:padding="10dp"
+        app:srcCompat="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/songTitle"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="32dp"
+        android:layout_toEndOf="@+id/albumCover"
+        android:text="CineLonga-Sciamachy"
+        android:textColor="@color/colorText"
+        android:textSize="12sp"
+        app:fontFamily="@font/archivo_black" />
+
+    <TextView
+        android:id="@+id/songCreator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="6dp"
+        android:layout_toEndOf="@+id/albumCover"
+        android:text="@cinelonga"
+        android:textColor="@color/colorTextGrey"
+        android:textSize="12sp"
+        app:fontFamily="@font/archivo_black" />
+
+</RelativeLayout>
