@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> songImageURL = new ArrayList<>();
     private ArrayList<String> creatorNames = new ArrayList<>();
     private ArrayList<String> songTitles = new ArrayList<>();
+    RecyclerView songRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,10 +102,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRecyclerView(){
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        songRecyclerView = findViewById(R.id.recycler_view);
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, creatorNames, songTitles, songImageURL);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        songRecyclerView.setAdapter(adapter);
+        songRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
 
