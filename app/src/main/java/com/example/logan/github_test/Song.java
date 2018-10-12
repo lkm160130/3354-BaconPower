@@ -7,6 +7,15 @@ public class Song {
     private String author;
     private Date date;
     private String permlink;
+    private String imageURL;
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 
     public String getPermlink() {
         return permlink;

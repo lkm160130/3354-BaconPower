@@ -2,6 +2,11 @@ package com.example.logan.github_test;
 
 import android.util.Log;
 
+import com.google.api.client.json.Json;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +37,16 @@ public class NetworkTools {
             song.setDate(d.getFirstRebloggedOn());
             song.setPermlink(d.getPermlink().getLink());
             song.setTitle(d.getTitle());
+
+            try {
+                JSONObject jObj = new JSONObject(d.getJsonMetadata());
+
+                song.setImageURL("https://gateway.ipfs.io/ipfs/"+jObj.getJSONObject("audio").getJSONObject("files").getString("cover"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Log.d("dsound",song.getImageURL());
 
             songs.add(song);
         }

@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
@@ -36,6 +38,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.albumImage.setImageResource(R.drawable.logo);
         holder.songTitle.setText(songs.get(position).getTitle());
         holder.creatorName.setText(songs.get(position).getAuthor());
+
+        Picasso.get().load(songs.get(position).getImageURL()).into(holder.albumImage);
     }
 
     @Override
