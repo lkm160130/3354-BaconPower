@@ -15,16 +15,12 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
-    private ArrayList<String> songImageURL = new ArrayList<>();
-    private ArrayList<String> creatorNames = new ArrayList<>();
-    private ArrayList<String> songTitles = new ArrayList<>();
+    private ArrayList<Song> songs = new ArrayList<>();
     private Context mContext;
 
-    public RecyclerViewAdapter(Context context, ArrayList<String> creatorNames, ArrayList<String> songTitles, ArrayList<String> songImageURL){
+    public RecyclerViewAdapter(Context context, ArrayList<Song> songs){
         this.mContext = context;
-        this.creatorNames = creatorNames;
-        this.songTitles = songTitles;
-        this.songImageURL = songImageURL;
+        this.songs = songs;
     }
 
     @NonNull
@@ -38,13 +34,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.albumImage.setImageResource(R.drawable.logo);
-        holder.songTitle.setText(songTitles.get(position));
-        holder.creatorName.setText(creatorNames.get(position));
+        holder.songTitle.setText(songs.get(position).getTitle());
+        holder.creatorName.setText(songs.get(position).getAuthor());
     }
 
     @Override
     public int getItemCount() {
-        return creatorNames.size();
+        return songs.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
