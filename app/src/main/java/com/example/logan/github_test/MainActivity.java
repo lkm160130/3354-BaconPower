@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> creatorNames = new ArrayList<>();
     private ArrayList<String> songTitles = new ArrayList<>();
     RecyclerView songRecyclerView;
+    SteemJ steemJClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +36,34 @@ public class MainActivity extends AppCompatActivity {
 
         initSong();
 
+        try {
+            steemJClient = new SteemJ();
+        } catch (SteemCommunicationException e) {
+            e.printStackTrace();
+        } catch (SteemResponseException e) {
+            e.printStackTrace();
+        }
 
 
+        Runnable fetch = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    NetworkTools.getDsoundTrending(steemJClient);
+                } catch (SteemResponseException e) {
+                    e.printStackTrace();
+                } catch (SteemCommunicationException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        new Thread(fetch).start();
 
     }
+
+
+
 
     private void initSong(){
         songImageURL.add("https://smiley.com/img/BRAND_SMILEY_MAIN.jpg");

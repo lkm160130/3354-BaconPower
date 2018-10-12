@@ -3,6 +3,9 @@
     package="com.example.logan.github_test">
 
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+
 
     <application
         android:allowBackup="true"
