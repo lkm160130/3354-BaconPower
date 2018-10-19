@@ -17,6 +17,6 @@
         android:padding="2dp"></android.support.v7.widget.RecyclerView>
 
 
-
+    <include layout="@layout/temp_playbar" />
 
 </LinearLayout>

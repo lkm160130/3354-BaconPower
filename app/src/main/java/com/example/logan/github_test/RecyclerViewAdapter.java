@@ -3,6 +3,7 @@ package com.example.logan.github_test;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +20,38 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private ArrayList<Song> songs = new ArrayList<>();
     private Context mContext;
+    private int activeHolderPosition = -1;
+
+    private View.OnClickListener clickListener;
+    
 
     public RecyclerViewAdapter(Context context, ArrayList<Song> songs){
         this.mContext = context;
         this.songs = songs;
+
+        clickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activeHolderPosition = (int)v.getTag();
+                v.setBackgroundResource(R.color.colorPrimary);
+                class playRunner implements Runnable{
+                    private View v;
+                    private playRunner(View v){
+                        this.v = v;
+                    }
+
+                    @Override
+                    public void run() {
+                        MusicPlayer.play(RecyclerViewAdapter.this.songs.get(activeHolderPosition).getSongURL());
+                    }
+                }
+
+
+                new Thread(new playRunner(v)).start();
+
+
+            }
+        };
     }
 
     @NonNull
@@ -34,11 +63,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         holder.albumImage.setImageResource(R.drawable.logo);
         holder.songTitle.setText(songs.get(position).getTitle());
         holder.creatorName.setText(songs.get(position).getAuthor());
 
+        if(activeHolderPosition  == position){
+            holder.parentLayout.setBackgroundResource(R.color.colorPrimary);
+        }
+        else{
+            holder.parentLayout.setBackgroundResource(R.color.colorForeground);
+        }
+
+        holder.parentLayout.setTag(position);
+        holder.parentLayout.setOnClickListener(clickListener);
         Picasso.get().load(songs.get(position).getImageURL()).into(holder.albumImage);
     }
 
@@ -53,6 +91,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView creatorName;
         TextView songTitle;
         RelativeLayout parentLayout;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -37,16 +37,19 @@ public class NetworkTools {
             song.setDate(d.getFirstRebloggedOn());
             song.setPermlink(d.getPermlink().getLink());
             song.setTitle(d.getTitle());
+            System.out.println(d.getJsonMetadata() +  "Hello");
 
             try {
+
                 JSONObject jObj = new JSONObject(d.getJsonMetadata());
 
                 song.setImageURL("https://gateway.ipfs.io/ipfs/"+jObj.getJSONObject("audio").getJSONObject("files").getString("cover"));
+         /*added*/song.setSongURL("https://gateway.ipfs.io/ipfs/"+jObj.getJSONObject("audio").getJSONObject("files").getString("sound"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            Log.d("dsound",song.getImageURL());
+           // Log.d("dsound",song.getImageURL());
 
             songs.add(song);
         }
