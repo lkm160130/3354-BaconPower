@@ -19,6 +19,8 @@ import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
 public class NetworkTools {
 
+    public static String IPFS_URL = "https://gateway.ipfs.io/ipfs/";
+
     public static ArrayList<Song> getDsoundTrending(SteemJ steemJ) throws SteemResponseException, SteemCommunicationException {
 
         ArrayList<Song> songs = new ArrayList<>();
@@ -31,7 +33,9 @@ public class NetworkTools {
                 = steemJ.getDiscussionsBy(discussionQuery, DiscussionSortType.GET_DISCUSSIONS_BY_TRENDING);
 
 
+        boolean failedAdding;
         for (Discussion d: discussions) {
+            failedAdding = false;
             Song song = new Song();
             song.setAuthor(d.getAuthor().getName());
             song.setDate(d.getFirstRebloggedOn());
@@ -43,15 +47,15 @@ public class NetworkTools {
 
                 JSONObject jObj = new JSONObject(d.getJsonMetadata());
 
-                song.setImageURL("https://gateway.ipfs.io/ipfs/"+jObj.getJSONObject("audio").getJSONObject("files").getString("cover"));
-         /*added*/song.setSongURL("https://gateway.ipfs.io/ipfs/"+jObj.getJSONObject("audio").getJSONObject("files").getString("sound"));
+                song.setImageURL(IPFS_URL+jObj.getJSONObject("audio").getJSONObject("files").getString("cover"));
+                song.setSongURL(IPFS_URL+jObj.getJSONObject("audio").getJSONObject("files").getString("sound"));
             } catch (JSONException e) {
                 e.printStackTrace();
+                failedAdding = true;
             }
 
-           // Log.d("dsound",song.getImageURL());
-
-            songs.add(song);
+            if (!failedAdding)
+                songs.add(song);
         }
 
         return songs;

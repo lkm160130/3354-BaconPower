@@ -34,20 +34,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onClick(View v) {
                 activeHolderPosition = (int)v.getTag();
                 v.setBackgroundResource(R.color.colorPrimary);
-                class playRunner implements Runnable{
-                    private View v;
-                    private playRunner(View v){
-                        this.v = v;
-                    }
+                notifyDataSetChanged();
+                MusicPlayer.play(RecyclerViewAdapter.this.songs.get(activeHolderPosition).getSongURL());
+//                class playRunner implements Runnable{
+//                    private View v;
+//                    private playRunner(View v){
+//                        this.v = v;
+//                    }
+//
+//                    @Override
+//                    public void run() {
+//                        MusicPlayer.play(RecyclerViewAdapter.this.songs.get(activeHolderPosition).getSongURL());
+//                    }
+//                }
 
-                    @Override
-                    public void run() {
-                        MusicPlayer.play(RecyclerViewAdapter.this.songs.get(activeHolderPosition).getSongURL());
-                    }
-                }
 
-
-                new Thread(new playRunner(v)).start();
+                //new Thread(new playRunner(v)).start();
 
 
             }
@@ -77,7 +79,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.parentLayout.setTag(position);
         holder.parentLayout.setOnClickListener(clickListener);
-        Picasso.get().load(songs.get(position).getImageURL()).into(holder.albumImage);
+        Picasso.get().load(songs.get(position).getImageURL()).resize(400,400).into(holder.albumImage);
     }
 
     @Override
