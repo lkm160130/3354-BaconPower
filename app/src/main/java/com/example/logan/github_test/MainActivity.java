@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Button;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,10 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Song> songs = new ArrayList<>();
     RecyclerView songRecyclerView;
     SteemJ steemJClient;
+    Button b_login;
+    Button b_trending;
+    Button b_hot;
+    Button b_new;
 
 
     @Override
@@ -24,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         initRecyclerView();
         initSteemJClient();
+        initButtos();
 
         getSongs();
 
@@ -31,7 +37,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+    private void initButtos(){
+        b_hot = findViewById(R.id.hot);
+        b_login = findViewById(R.id.login);
+        b_new = findViewById(R.id._new);
+        b_trending = findViewById(R.id.trending);
+    }
     private void initSteemJClient(){
         try {
             steemJClient = new SteemJ();

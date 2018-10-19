@@ -19,7 +19,7 @@
             app:srcCompat="@drawable/logo" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/trending"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -28,7 +28,7 @@
             android:textColor="@color/colorTextLight" />
 
         <Button
-            android:id="@+id/button6"
+            android:id="@+id/hot"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -37,7 +37,7 @@
             android:textColor="@color/colorTextLight" />
 
         <Button
-            android:id="@+id/button7"
+            android:id="@+id/_new"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -46,7 +46,7 @@
             android:textColor="@color/colorTextLight" />
 
         <Button
-            android:id="@+id/button9"
+            android:id="@+id/login"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
