@@ -20,13 +20,38 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private ArrayList<Song> songs = new ArrayList<>();
     private Context mContext;
-    private ViewHolder activeHolder;
     private int activeHolderPosition = -1;
+
+    private View.OnClickListener clickListener;
     
 
     public RecyclerViewAdapter(Context context, ArrayList<Song> songs){
         this.mContext = context;
         this.songs = songs;
+
+        clickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activeHolderPosition = (int)v.getTag();
+                v.setBackgroundResource(R.color.colorPrimary);
+                class playRunner implements Runnable{
+                    private View v;
+                    private playRunner(View v){
+                        this.v = v;
+                    }
+
+                    @Override
+                    public void run() {
+                        MusicPlayer.play(RecyclerViewAdapter.this.songs.get(activeHolderPosition).getSongURL());
+                    }
+                }
+
+
+                new Thread(new playRunner(v)).start();
+
+
+            }
+        };
     }
 
     @NonNull
@@ -43,35 +68,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.songTitle.setText(songs.get(position).getTitle());
         holder.creatorName.setText(songs.get(position).getAuthor());
 
-        if(activeHolderPosition  == holder.getAdapterPosition()){
+        if(activeHolderPosition  == position){
             holder.parentLayout.setBackgroundResource(R.color.colorPrimary);
         }
         else{
             holder.parentLayout.setBackgroundResource(R.color.colorForeground);
         }
 
-        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(activeHolder != null){
-                    activeHolder.parentLayout.setBackgroundResource(R.color.colorForeground);
-                }
-                    activeHolder = holder;
-                    activeHolderPosition = holder.getAdapterPosition();
-                    holder.parentLayout.setBackgroundResource(R.color.colorPrimary);
-                Runnable fetch = new Runnable() {
-                    @Override
-                    public void run() {
-
-                        MusicPlayer.play(songs.get(position).getSongURL());
-                    }
-                };
-
-                new Thread(fetch).start();
-
-
-            }
-        });
+        holder.parentLayout.setTag(position);
+        holder.parentLayout.setOnClickListener(clickListener);
         Picasso.get().load(songs.get(position).getImageURL()).into(holder.albumImage);
     }
 
