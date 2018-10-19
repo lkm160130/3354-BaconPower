@@ -8,6 +8,15 @@ public class Song {
     private Date date;
     private String permlink;
     private String imageURL;
+    private String songURL;
+
+    /*added*/ public String getSongURL(){
+        return songURL;
+    }
+
+    /*added*/ public void setSongURL(String songURL){
+        this.songURL = songURL;
+    }
 
     public String getImageURL() {
         return imageURL;

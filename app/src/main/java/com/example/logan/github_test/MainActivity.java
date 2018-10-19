@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView songRecyclerView;
     SteemJ steemJClient;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,8 +24,13 @@ public class MainActivity extends AppCompatActivity {
 
         initRecyclerView();
         initSteemJClient();
+
         getSongs();
+
+
     }
+
+
 
     private void initSteemJClient(){
         try {
