@@ -33,7 +33,7 @@
         android:layout_weight="1"
         android:background="@color/colorTransparent"
         android:text="Hot"
-        android:textColor="@color/colorTextLight" />
+        android:textColor="@color/colorTextLight"/>
 
     <Button
         android:id="@+id/button7"
