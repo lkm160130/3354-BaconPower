@@ -7,21 +7,20 @@
     android:orientation="horizontal">
 
 
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="80dp"
-            android:layout_height="70dp"
-            android:layout_gravity="left"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/logo" />
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="80dp"
+        android:layout_height="70dp"
+        android:layout_gravity="left"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_weight="1"
+        app:srcCompat="@drawable/logo" />
 
         <Button
             android:id="@+id/trending"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="70dp"
             android:layout_weight="1"
             android:background="@color/colorTransparent"
             android:text="Trending"
@@ -30,7 +29,7 @@
         <Button
             android:id="@+id/hot"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="70dp"
             android:layout_weight="1"
             android:background="@color/colorTransparent"
             android:text="Hot"
@@ -39,7 +38,7 @@
         <Button
             android:id="@+id/_new"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="70dp"
             android:layout_weight="1"
             android:background="@color/colorTransparent"
             android:text="New"
@@ -48,7 +47,7 @@
         <Button
             android:id="@+id/login"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="70dp"
             android:layout_weight="1"
             android:background="@color/colorTransparent"
             android:text="Login"

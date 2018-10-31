@@ -68,7 +68,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         holder.albumImage.setImageResource(R.drawable.logo);
         holder.songTitle.setText(songs.get(position).getTitle());
-        holder.creatorName.setText(songs.get(position).getAuthor());
+        holder.creatorName.setText("@" + songs.get(position).getAuthor());
 
         if(activeHolderPosition  == position){
             holder.parentLayout.setBackgroundResource(R.color.colorPrimary);
@@ -103,4 +103,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             parentLayout = itemView.findViewById(R.id.parentLayout);
         }
     }
+
+    public void resetActiveHolder(){
+        activeHolderPosition = -1;
+    }
+
 }

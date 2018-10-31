@@ -21,16 +21,29 @@ public class NetworkTools {
 
     public static String IPFS_URL = "https://gateway.ipfs.io/ipfs/";
 
-    public static ArrayList<Song> getDsoundTrending(SteemJ steemJ) throws SteemResponseException, SteemCommunicationException {
+    public static ArrayList<Song> getDsoundSongs(SteemJ steemJ, String tag) throws SteemResponseException, SteemCommunicationException {
 
         ArrayList<Song> songs = new ArrayList<>();
 
         DiscussionQuery discussionQuery = new DiscussionQuery();
         discussionQuery.setTag("dsound");
         discussionQuery.setLimit(50);
+        List<Discussion> discussions;
+        switch (tag){
+            case "Trending":
+                 discussions = steemJ.getDiscussionsBy(discussionQuery, DiscussionSortType.GET_DISCUSSIONS_BY_TRENDING);
+            break;
+            case "Hot":
+                discussions = steemJ.getDiscussionsBy(discussionQuery, DiscussionSortType.GET_DISCUSSIONS_BY_HOT);
+            break;
+            case "New":
+                discussions = steemJ.getDiscussionsBy(discussionQuery, DiscussionSortType.GET_DISCUSSIONS_BY_CREATED);
+            break;
 
-        List<Discussion> discussions
-                = steemJ.getDiscussionsBy(discussionQuery, DiscussionSortType.GET_DISCUSSIONS_BY_TRENDING);
+            default:
+                discussions = steemJ.getDiscussionsBy(discussionQuery, DiscussionSortType.GET_DISCUSSIONS_BY_FEED);
+        }
+
 
 
         boolean failedAdding;
