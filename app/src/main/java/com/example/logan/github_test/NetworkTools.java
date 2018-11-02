@@ -54,7 +54,7 @@ public class NetworkTools {
             song.setDate(d.getFirstRebloggedOn());
             song.setPermlink(d.getPermlink().getLink());
             song.setTitle(d.getTitle());
-            System.out.println(d.getJsonMetadata() +  "Hello");
+            Log.d("SC",d.getJsonMetadata());
 
             try {
 
@@ -62,6 +62,7 @@ public class NetworkTools {
 
                 song.setImageURL(IPFS_URL+jObj.getJSONObject("audio").getJSONObject("files").getString("cover"));
                 song.setSongURL(IPFS_URL+jObj.getJSONObject("audio").getJSONObject("files").getString("sound"));
+                song.setDuration((int)jObj.getJSONObject("audio").getDouble("duration"));
             } catch (JSONException e) {
                 e.printStackTrace();
                 failedAdding = true;

@@ -1,16 +1,25 @@
 package com.example.logan.github_test;
 
+import android.animation.LayoutTransition;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import eu.bittrade.libs.steemj.SteemJ;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
@@ -25,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
     Button b_trending;
     Button b_hot;
     Button b_new;
+    LinearLayout playBar;
+    SeekBar playBarSeekBar;
+    MusicPlayer player;
+    Timer durationTimer;
 
     String startingTag = "Feed"; //Note this actually just triggers the default case in NetworkTool.getDsoundSongs. Set to Trending, Hot, or New to change starting list of songs
 
@@ -71,16 +84,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        player = new MusicPlayer(this);
 
+        initMainLayout();
         initRecyclerView();
         initSteemJClient();
         initButtos();
+        updateMusicBar();
+
 
         getSongs(startingTag);
-
-
     }
 
+    private void initMainLayout(){
+        playBar = findViewById(R.id.play_bar);
+        playBarSeekBar = findViewById(R.id.seekBar);
+    }
 
     private void initButtos(){
         b_hot = findViewById(R.id.hot);
@@ -133,10 +152,69 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void updateMusicBar(){
+        if (MusicPlayer.mediaPlayer!=null)
+            playBar.setVisibility(View.VISIBLE);
+        else
+            return;
+
+        if (MusicPlayer.mediaPlayer.isPlaying()){
+            ((ImageButton)playBar.findViewById(R.id.pause_play_btn)).setImageResource(R.drawable.ic_pause);
+        }else {
+            ((ImageButton)playBar.findViewById(R.id.pause_play_btn)).setImageResource(R.drawable.ic_play_arrow);
+        }
+
+
+        if (!MusicPlayer.mediaPlayer.isPlaying()) {
+            if (durationTimer!=null) {
+                durationTimer.cancel();
+                durationTimer.purge();
+                durationTimer = null;
+            }
+            return;
+        }
+
+        if (durationTimer == null) {
+            durationTimer = new Timer();
+            durationTimer.schedule(new TimerTask() {
+
+                @Override
+                public void run() {
+                    if (player.song!=null){
+                        if (playBarSeekBar.getMax()!= player.song.getDuration())
+                            playBarSeekBar.setMax(player.song.getDuration());
+
+                        if (MusicPlayer.mediaPlayer.isPlaying()){
+                            playBarSeekBar.setProgress(MusicPlayer.mediaPlayer.getCurrentPosition()/1000);
+                        }
+
+                    }
+                }
+
+            }, 0, 1000);
+        }
+
+    }
+
+
+    public void musicBarItemClicked(View v){
+        if (MusicPlayer.mediaPlayer==null)
+            return;
+
+        if (MusicPlayer.mediaPlayer.isPlaying()){
+            MusicPlayer.mediaPlayer.pause();
+        }else {
+            MusicPlayer.mediaPlayer.start();
+        }
+
+        updateMusicBar();
+
+    }
+
 
     private void initRecyclerView(){
         songRecyclerView = findViewById(R.id.recycler_view);
-        adapter = new RecyclerViewAdapter(this, songs);
+        adapter = new RecyclerViewAdapter(this, songs, player);
         songRecyclerView.setAdapter(adapter);
         songRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }

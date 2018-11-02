@@ -10,6 +10,16 @@ public class Song {
     private String imageURL;
     private String songURL;
 
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    private int duration;
+
     /*added*/ public String getSongURL(){
         return songURL;
     }

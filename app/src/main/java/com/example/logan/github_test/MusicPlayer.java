@@ -8,9 +8,16 @@ import java.io.IOException;
 
 public class MusicPlayer {
    static MediaPlayer mediaPlayer = new MediaPlayer();
+   MainActivity mainActivity;
+    Song song;
+
+   MusicPlayer(MainActivity mainActivity){
+       this.mainActivity = mainActivity;
+   }
 
 
-    static public void play(String songURL) {
+   void play(Song song) {
+        this.song = song;
 
         class ReleaseRunner implements Runnable{
             private MediaPlayer mp;
@@ -39,7 +46,7 @@ public class MusicPlayer {
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
-            mediaPlayer.setDataSource(songURL);
+            mediaPlayer.setDataSource(song.getSongURL());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -48,9 +55,15 @@ public class MusicPlayer {
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
-                Log.d("ds",5+ ""+ mediaPlayer);
                 mediaPlayer.start();
-                Log.d("ds",6+"");
+                mainActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainActivity.updateMusicBar();
+                    }
+                });
+
+                //mediaPlayer.seton
             }
         });
 
