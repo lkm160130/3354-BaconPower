@@ -18,16 +18,18 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
-    private ArrayList<Song> songs = new ArrayList<>();
+    private ArrayList<Song> songs;
     private Context mContext;
     private int activeHolderPosition = -1;
+    MusicPlayer musicPlayer;
 
     private View.OnClickListener clickListener;
     
 
-    public RecyclerViewAdapter(Context context, ArrayList<Song> songs){
+    public RecyclerViewAdapter(Context context, ArrayList<Song> songs, final MusicPlayer player){
         this.mContext = context;
         this.songs = songs;
+        this.musicPlayer = player;
 
         clickListener = new View.OnClickListener() {
             @Override
@@ -35,25 +37,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 activeHolderPosition = (int)v.getTag();
                 v.setBackgroundResource(R.color.colorPrimary);
                 notifyDataSetChanged();
-                MusicPlayer.play(RecyclerViewAdapter.this.songs.get(activeHolderPosition).getSongURL());
-//                class playRunner implements Runnable{
-//                    private View v;
-//                    private playRunner(View v){
-//                        this.v = v;
-//                    }
-//
-//                    @Override
-//                    public void run() {
-//                        MusicPlayer.play(RecyclerViewAdapter.this.songs.get(activeHolderPosition).getSongURL());
-//                    }
-//                }
-
-
-                //new Thread(new playRunner(v)).start();
-
-
+                player.play(RecyclerViewAdapter.this.songs.get(activeHolderPosition));
             }
         };
+
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -85,6 +73,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public int getItemCount() {
         return songs.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return songs.get(position).hashCode();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

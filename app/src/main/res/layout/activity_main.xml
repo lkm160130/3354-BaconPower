@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
-    android:orientation="vertical"
     tools:context="com.example.logan.github_test.MainActivity">
 
-    <include layout="@layout/action_bar"/>
+    <include layout="@layout/action_bar"
+        android:id="@+id/action_bar"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="2dp"></android.support.v7.widget.RecyclerView>
+        android:layout_below="@+id/action_bar"
+        android:layout_above="@id/play_bar"
+        android:padding="2dp" />
+    <include
+        android:id="@+id/play_bar"
+        layout="@layout/play_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        />
 
-
-    <include layout="@layout/temp_playbar" />
-
-</LinearLayout>
+</RelativeLayout>
