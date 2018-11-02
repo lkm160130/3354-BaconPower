@@ -16,8 +16,13 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     Button b_new;
     LinearLayout playBar;
     SeekBar playBarSeekBar;
+    TextView durationText;
     MusicPlayer player;
     Timer durationTimer;
 
@@ -100,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
     private void initMainLayout(){
         playBar = findViewById(R.id.play_bar);
         playBarSeekBar = findViewById(R.id.seekBar);
+        durationText = findViewById(R.id.duration);
     }
 
     private void initButtos(){
@@ -186,7 +193,19 @@ public class MainActivity extends AppCompatActivity {
                             playBarSeekBar.setMax(player.song.getDuration());
 
                         if (MusicPlayer.mediaPlayer.isPlaying()){
-                            playBarSeekBar.setProgress(MusicPlayer.mediaPlayer.getCurrentPosition()/1000);
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    playBarSeekBar.setProgress(MusicPlayer.mediaPlayer.getCurrentPosition()/1000);
+                                    TimeZone tz = TimeZone.getTimeZone("UTC");
+                                    SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+                                    df.setTimeZone(tz);
+                                    String time = df.format(new Date(MusicPlayer.mediaPlayer.getCurrentPosition()));
+                                    durationText.setText(time);
+                                }
+                            });
+
                         }
 
                     }
