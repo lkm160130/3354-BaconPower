@@ -100,5 +100,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void resetActiveHolder(){
         activeHolderPosition = -1;
     }
+    public int getActiveHolderPosition(){
+        return activeHolderPosition;
+    }
+    public void setActiveHolderPosition(int activeHolderPosition){
+        this.activeHolderPosition = activeHolderPosition;
+        notifyDataSetChanged();
+    }
+
+
 
 }

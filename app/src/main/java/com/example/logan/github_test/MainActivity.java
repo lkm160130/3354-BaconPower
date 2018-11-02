@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     getSongs("New");
 
                     break;
+
             }
         }
     };
@@ -198,16 +199,38 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void musicBarItemClicked(View v){
-        if (MusicPlayer.mediaPlayer==null)
-            return;
+        switch(v.getId()) {
+            case R.id.pause_play_btn:
+            if (MusicPlayer.mediaPlayer == null)
+                return;
 
-        if (MusicPlayer.mediaPlayer.isPlaying()){
-            MusicPlayer.mediaPlayer.pause();
-        }else {
-            MusicPlayer.mediaPlayer.start();
-        }
+            if (MusicPlayer.mediaPlayer.isPlaying()) {
+                MusicPlayer.mediaPlayer.pause();
+            } else {
+                MusicPlayer.mediaPlayer.start();
+            }
+
 
         updateMusicBar();
+        break;
+        case R.id.next:
+
+                int nextIndex = (adapter.getActiveHolderPosition() + 1)% songs.size();
+
+                player.play(songs.get(nextIndex));
+                adapter.setActiveHolderPosition(nextIndex);
+
+        break;
+        case R.id.previous:
+            int nextIndex2 = (adapter.getActiveHolderPosition() - 1)% songs.size();
+            if(nextIndex2 < 0){
+                nextIndex2 = songs.size() - 1;
+            }
+            player.play(songs.get(nextIndex2));
+            adapter.setActiveHolderPosition(nextIndex2);
+
+        break;
+    }
 
     }
 
