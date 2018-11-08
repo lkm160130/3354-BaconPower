@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -249,6 +250,11 @@ public class MainActivity extends AppCompatActivity {
             adapter.setActiveHolderPosition(nextIndex2);
 
         break;
+            case R.id.shuffle:
+                Random rnd = new Random();
+                int randomSongIndex = rnd.nextInt(songs.size());
+                player.play(songs.get(randomSongIndex));
+                adapter.setActiveHolderPosition(randomSongIndex);
     }
 
     }
