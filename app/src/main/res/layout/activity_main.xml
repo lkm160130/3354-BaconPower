@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/action_bar"
         android:layout_above="@id/play_bar"
-        android:padding="2dp" />
+        android:padding="1dp" />
     <include
         android:id="@+id/play_bar"
         layout="@layout/play_bar"
