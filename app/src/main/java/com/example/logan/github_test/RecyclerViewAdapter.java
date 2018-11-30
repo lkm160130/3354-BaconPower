@@ -24,7 +24,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private View.OnClickListener clickListener;
     
 
-    public RecyclerViewAdapter(Context context, ArrayList<Song> songs, final MusicPlayer player){
+    public RecyclerViewAdapter(final Context context, ArrayList<Song> songs, final MusicPlayer player){
         this.mContext = context;
         this.songs = songs;
         this.musicPlayer = player;
@@ -35,6 +35,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 activeHolderPosition = (int)v.getTag();
                 v.setBackgroundResource(R.color.colorPrimary);
                 notifyDataSetChanged();
+                ((MainActivity)context).songLoadingCircleView.setVisibility(View.VISIBLE);
+                ((MainActivity)context).durationText.setVisibility(View.GONE);
                 player.play(RecyclerViewAdapter.this.songs.get(activeHolderPosition));
             }
         };

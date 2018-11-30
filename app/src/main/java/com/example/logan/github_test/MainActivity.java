@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     Button b_trending;
     Button b_hot;
     Button b_new;
+    ProgressBar loadingCircleView;
+    ProgressBar songLoadingCircleView;
     LinearLayout playBar;
     SeekBar playBarSeekBar;
     TextView durationText;
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     b_hot.setTextColor(getResources().getColor(R.color.colorText));
                     b_trending.setTextColor(getResources().getColor(R.color.colorTextLight));
                     b_new.setTextColor(getResources().getColor(R.color.colorTextLight));
+                    loadingCircleView.setVisibility(View.VISIBLE);
                     getSongs(NetworkTools.TAG_HOT);
 
                     break;
@@ -61,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                     b_trending.setTextColor(getResources().getColor(R.color.colorText));
                     b_hot.setTextColor(getResources().getColor(R.color.colorTextLight));
                     b_new.setTextColor(getResources().getColor(R.color.colorTextLight));
+                    loadingCircleView.setVisibility(View.VISIBLE);
                     getSongs(NetworkTools.TAG_TRENDING);
 
                     break;
@@ -69,10 +74,18 @@ public class MainActivity extends AppCompatActivity {
                     b_new.setTextColor(getResources().getColor(R.color.colorText));
                     b_trending.setTextColor(getResources().getColor(R.color.colorTextLight));
                     b_hot.setTextColor(getResources().getColor(R.color.colorTextLight));
+                    loadingCircleView.setVisibility(View.VISIBLE);
                     getSongs(NetworkTools.TAG_NEW);
 
                     break;
-
+                case R.id.logo:
+                    adapter.resetActiveHolder();
+                    b_new.setTextColor(getResources().getColor(R.color.colorTextLight));
+                    b_trending.setTextColor(getResources().getColor(R.color.colorTextLight));
+                    b_hot.setTextColor(getResources().getColor(R.color.colorTextLight));
+                    loadingCircleView.setVisibility(View.VISIBLE);
+                    getSongs(NetworkTools.TAG_FEED);
+                    break;
             }
         }
     };
@@ -103,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         playBar = findViewById(R.id.play_bar);
         playBarSeekBar = findViewById(R.id.seekBar);
         durationText = findViewById(R.id.duration);
+        loadingCircleView = findViewById(R.id.progressBar);
     }
 
     private void initButtos(){
@@ -114,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         b_new.setOnClickListener(clickListener);
         b_trending = findViewById(R.id.trending);
         b_trending.setOnClickListener(clickListener);
+        findViewById(R.id.logo).setOnClickListener(clickListener);
     }
     private void initSteemJClient(){
         try {
@@ -143,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             if (songRecyclerView.getAdapter()!=null)
                                 songRecyclerView.getAdapter().notifyDataSetChanged();
+                            loadingCircleView.setVisibility(View.GONE);
                         }
                     });
                 } catch (SteemResponseException e) {
@@ -158,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void initMusicBar(){
+        songLoadingCircleView = findViewById(R.id.songProgressBar);
         playBarSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -188,6 +205,8 @@ public class MainActivity extends AppCompatActivity {
             return;
 
         if (MusicPlayer.mediaPlayer.isPlaying()){
+            songLoadingCircleView.setVisibility(View.GONE);
+            durationText.setVisibility(View.VISIBLE);
             ((ImageButton)playBar.findViewById(R.id.pause_play_btn)).setImageResource(R.drawable.ic_pause);
         }else {
             ((ImageButton)playBar.findViewById(R.id.pause_play_btn)).setImageResource(R.drawable.ic_play_arrow);
@@ -251,7 +270,8 @@ public class MainActivity extends AppCompatActivity {
         case R.id.next:
 
                 int nextIndex = (adapter.getActiveHolderPosition() + 1)% songs.size();
-
+                songLoadingCircleView.setVisibility(View.VISIBLE);
+                durationText.setVisibility(View.GONE);
                 player.play(songs.get(nextIndex));
                 adapter.setActiveHolderPosition(nextIndex);
 
@@ -261,6 +281,8 @@ public class MainActivity extends AppCompatActivity {
             if(nextIndex2 < 0){
                 nextIndex2 = songs.size() - 1;
             }
+            songLoadingCircleView.setVisibility(View.VISIBLE);
+            durationText.setVisibility(View.GONE);
             player.play(songs.get(nextIndex2));
             adapter.setActiveHolderPosition(nextIndex2);
 
@@ -268,6 +290,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.shuffle:
                 Random rnd = new Random();
                 int randomSongIndex = rnd.nextInt(songs.size());
+                songLoadingCircleView.setVisibility(View.VISIBLE);
+                durationText.setVisibility(View.GONE);
                 player.play(songs.get(randomSongIndex));
                 adapter.setActiveHolderPosition(randomSongIndex);
     }

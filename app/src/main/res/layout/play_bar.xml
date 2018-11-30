@@ -59,6 +59,14 @@
         android:textColor="@android:color/black"
         tools:text="0:00" />
 
+    <ProgressBar
+        android:id="@+id/songProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:visibility="gone"
+        android:layout_weight=".5" />
+
     <SeekBar
         android:id="@+id/seekBar"
         android:layout_width="117dp"
