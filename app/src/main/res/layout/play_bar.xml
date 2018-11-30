@@ -8,6 +8,7 @@
     android:layout_alignParentBottom="true"
     android:layout_alignParentStart="true"
     android:layout_alignParentLeft="true"
+    android:weightSum="7"
     android:background="@android:color/white">
 
     <ImageButton
@@ -18,6 +19,7 @@
         app:srcCompat="@drawable/ic_skip_previous"
         android:onClick="musicBarItemClicked"
         tools:layout_editor_absoluteX="55dp"
+        android:layout_weight=".5"
         tools:layout_editor_absoluteY="428dp" />
 
     <ImageButton
@@ -26,6 +28,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/white"
         android:onClick="musicBarItemClicked"
+        android:layout_weight=".5"
         app:srcCompat="@drawable/ic_play_arrow" />
 
     <ImageButton
@@ -34,6 +37,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/white"
         android:onClick="musicBarItemClicked"
+        android:layout_weight=".5"
         app:srcCompat="@drawable/ic_skip_next" />
 
     <ImageButton
@@ -42,6 +46,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:onClick="musicBarItemClicked"
+        android:layout_weight=".5"
         app:srcCompat="@drawable/ic_shuffle" />
 
     <TextView
@@ -49,8 +54,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
         android:gravity="center"
+        android:layout_weight=".5"
         android:textColor="@android:color/black"
         tools:text="0:00" />
 
@@ -58,8 +63,8 @@
         android:id="@+id/seekBar"
         android:layout_width="117dp"
         android:layout_height="match_parent"
-
         android:progressDrawable="@drawable/scrollbar"
+        android:layout_weight="3.5"
         android:thumb="@null">
 
 
@@ -70,6 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
+        android:layout_weight=".5"
         app:srcCompat="@drawable/ic_favorite_border" />
 
     <ImageButton
@@ -77,5 +83,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
+        android:layout_weight=".5"
         app:srcCompat="@drawable/ic_repeat" />
 </LinearLayout>

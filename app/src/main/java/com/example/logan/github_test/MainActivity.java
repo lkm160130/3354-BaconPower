@@ -1,29 +1,21 @@
 package com.example.logan.github_test;
 
-import android.animation.LayoutTransition;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Random;
-import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -46,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     MusicPlayer player;
     Timer durationTimer;
 
-    String startingTag = "Feed"; //Note this actually just triggers the default case in NetworkTool.getDsoundSongs. Set to Trending, Hot, or New to change starting list of songs
+    boolean seekingThroughTrack;
 
     View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
@@ -61,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                     b_hot.setTextColor(getResources().getColor(R.color.colorText));
                     b_trending.setTextColor(getResources().getColor(R.color.colorTextLight));
                     b_new.setTextColor(getResources().getColor(R.color.colorTextLight));
-                    getSongs("Hot");
+                    getSongs(NetworkTools.TAG_HOT);
 
                     break;
                 case R.id.trending:
@@ -69,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                     b_trending.setTextColor(getResources().getColor(R.color.colorText));
                     b_hot.setTextColor(getResources().getColor(R.color.colorTextLight));
                     b_new.setTextColor(getResources().getColor(R.color.colorTextLight));
-                    getSongs("Trending");
+                    getSongs(NetworkTools.TAG_TRENDING);
 
                     break;
                 case R.id._new:
@@ -77,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     b_new.setTextColor(getResources().getColor(R.color.colorText));
                     b_trending.setTextColor(getResources().getColor(R.color.colorTextLight));
                     b_hot.setTextColor(getResources().getColor(R.color.colorTextLight));
-                    getSongs("New");
+                    getSongs(NetworkTools.TAG_NEW);
 
                     break;
 
@@ -91,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.d("DT","onCreate");
+
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         player = new MusicPlayer(this);
 
@@ -98,10 +92,11 @@ public class MainActivity extends AppCompatActivity {
         initRecyclerView();
         initSteemJClient();
         initButtos();
+        initMusicBar();
         updateMusicBar();
 
 
-        getSongs(startingTag);
+        getSongs(NetworkTools.TAG_FEED);
     }
 
     private void initMainLayout(){
@@ -131,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void getSongs(final String tag){
+    private void getSongs(final int tag){
         Runnable fetch = new Runnable() {
             @Override
             public void run() {
@@ -146,7 +141,8 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            songRecyclerView.getAdapter().notifyDataSetChanged();
+                            if (songRecyclerView.getAdapter()!=null)
+                                songRecyclerView.getAdapter().notifyDataSetChanged();
                         }
                     });
                 } catch (SteemResponseException e) {
@@ -160,6 +156,30 @@ public class MainActivity extends AppCompatActivity {
         new Thread(fetch).start();
     }
 
+
+    public void initMusicBar(){
+        playBarSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (seekingThroughTrack)
+                    durationText.setText(player.convertPositionToTimeString(progress*1000));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                seekingThroughTrack = true;
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                seekingThroughTrack = false;
+
+                if (MusicPlayer.mediaPlayer!=null && MusicPlayer.mediaPlayer.isPlaying()){
+                    MusicPlayer.mediaPlayer.seekTo(playBarSeekBar.getProgress()*1000);
+                }
+            }
+        });
+    }
 
     public void updateMusicBar(){
         if (MusicPlayer.mediaPlayer!=null)
@@ -183,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+
         if (durationTimer == null) {
             durationTimer = new Timer();
             durationTimer.schedule(new TimerTask() {
@@ -198,23 +219,17 @@ public class MainActivity extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    playBarSeekBar.setProgress(MusicPlayer.mediaPlayer.getCurrentPosition()/1000);
-                                    TimeZone tz = TimeZone.getTimeZone("UTC");
-                                    SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-                                    df.setTimeZone(tz);
-                                    String time = df.format(new Date(MusicPlayer.mediaPlayer.getCurrentPosition()));
-                                    durationText.setText(time);
+                                    if (!seekingThroughTrack) {
+                                        playBarSeekBar.setProgress(MusicPlayer.mediaPlayer.getCurrentPosition() / 1000);
+                                        durationText.setText(player.getTimeString());
+                                    }
                                 }
                             });
-
                         }
-
                     }
                 }
-
             }, 0, 1000);
         }
-
     }
 
 

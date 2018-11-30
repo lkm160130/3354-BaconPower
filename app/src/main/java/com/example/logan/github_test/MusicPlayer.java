@@ -5,10 +5,13 @@ import android.media.MediaPlayer;
 import android.util.Log;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class MusicPlayer {
    static MediaPlayer mediaPlayer = new MediaPlayer();
-   MainActivity mainActivity;
+   private MainActivity mainActivity;
     Song song;
 
    MusicPlayer(MainActivity mainActivity){
@@ -77,8 +80,24 @@ public class MusicPlayer {
         mediaPlayer.pause();
     }
 
+    public String getTimeString(){
+        if (mediaPlayer!=null && mediaPlayer.isPlaying()) {
+            return convertPositionToTimeString(mediaPlayer.getCurrentPosition());
+        }
+        return null;
+    }
 
-
-
+    public String convertPositionToTimeString(int duration){
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        SimpleDateFormat df;
+        //if sound is longer than an hour then diplay hours
+        if ((mediaPlayer.getDuration() / 1000) > 3600) {
+            df = new SimpleDateFormat("HH:mm:ss");
+        } else {
+            df = new SimpleDateFormat("mm:ss");
+        }
+        df.setTimeZone(tz);
+        return df.format(new Date(duration));
+    }
 
 }
