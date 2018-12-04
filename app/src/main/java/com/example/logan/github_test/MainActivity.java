@@ -203,6 +203,17 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                         public void run() {
                             if (songRecyclerView.getAdapter()!=null)
                                 songRecyclerView.getAdapter().notifyDataSetChanged();
+
+                            //set selector position if song is in list
+                            if (MusicPlayer.getInstance().getCurrentSongPlaying()!=null) {
+                                for (int i = 0; i < songs.size(); i++) {
+                                    if (songs.get(i).getPermlink().getLink()
+                                            .equals(MusicPlayer.getInstance().getCurrentSongPlaying().getPermlink().getLink())){
+                                        ((RecyclerViewAdapter)songRecyclerView.getAdapter()).setActiveHolderPosition(i);
+                                        break;
+                                    }
+                                }
+                            }
                             loadingCircleView.setVisibility(View.GONE);
                         }
                     });
