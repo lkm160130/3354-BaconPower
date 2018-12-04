@@ -2,4 +2,9 @@
     <string name="app_name">DSound Mobile</string>
     <string name="login_failed">Login failed, Please make sure your private posting key is correct</string>
     <string name="login_succeeded">Login succeeded</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="new_s">New</string>
+    <string name="hot">Hot</string>
+    <string name="trending">Trending</string>
 </resources>

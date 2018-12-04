@@ -1,5 +1,6 @@
 package com.example.logan.github_test;
 
+import android.annotation.SuppressLint;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
@@ -15,26 +16,28 @@ import java.util.TimeZone;
  */
 class MusicPlayer {
    private static MediaPlayer mediaPlayer = new MediaPlayer();
-   private MainActivity mainActivity;
-   Song song;
+   private Song currentSongPlaying;
+
+   private static MusicPlayer musicPlayer;
 
 
-    /**
-     * @param mainActivity used for updating mainActivity UI
-     */
-   MusicPlayer(MainActivity mainActivity){
-       this.mainActivity = mainActivity;
+   private MusicPlayer(){}
+
+   public static MusicPlayer getInstance(){
+       if (musicPlayer == null)
+           musicPlayer = new MusicPlayer();
+
+       return musicPlayer;
    }
 
 
     /**
-     * loads and starts playing a song from the network in the background
+     * loads and starts playing a songLoading from the network in the background
      * method will automatically call updateMusicBar once
-     * song starts playing in order to update UI
-     * @param song object which must include a song URL
+     * songLoading starts playing in order to update UI
+     * @param song object which must include a songLoading URL
      */
-   void play(final Song song) {
-        this.song = song;
+   void play(final Song song, final MainActivity mainActivity) {
 
         class ReleaseRunner implements Runnable{
             private MediaPlayer mp;
@@ -57,7 +60,7 @@ class MusicPlayer {
             }
         }
 
-        //releases previous song on a different thread because it was discovered that
+        //releases previous songLoading on a different thread because it was discovered that
         //the release method can take up lots of time to complete
         new Thread(new ReleaseRunner(mediaPlayer)).start();
 
@@ -79,7 +82,7 @@ class MusicPlayer {
                 mainActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mainActivity.setCurrentSongPlaying(song);
+                        setCurrentSongPlaying(song);
                         mainActivity.updateMusicBar();
                     }
                 });
@@ -108,7 +111,7 @@ class MusicPlayer {
     }
 
     /**
-     * @return if the MediaPlayer is currently playing a song
+     * @return if the MediaPlayer is currently playing a songLoading
      */
     boolean isPlaying(){
        if (mediaPlayer!=null)
@@ -136,6 +139,21 @@ class MusicPlayer {
 
 
     /**
+     * @return songLoading that is playing (only after it has loaded and started playing)
+     */
+    Song getCurrentSongPlaying() {
+        return currentSongPlaying;
+    }
+
+    /**
+     * @param currentSongPlaying songLoading that has been loaded and started playing
+     */
+    public void setCurrentSongPlaying(Song currentSongPlaying) {
+        this.currentSongPlaying = currentSongPlaying;
+    }
+
+
+    /**
      * @return position of mediaPlayer in ms
      */
     int getCurrentPosition(){
@@ -149,6 +167,7 @@ class MusicPlayer {
      * @param duration in ms
      * @return formatted string mm:ss or HH:mm:ss for the given duration
      */
+    @SuppressLint("SimpleDateFormat")
     String convertPositionToTimeString(int duration){
         TimeZone tz = TimeZone.getTimeZone("UTC");
         SimpleDateFormat df;

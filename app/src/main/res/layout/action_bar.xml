@@ -24,7 +24,7 @@
             android:layout_height="70dp"
             android:layout_weight="1"
             android:background="@color/colorTransparent"
-            android:text="Trending"
+            android:text="@string/trending"
             android:textColor="@color/colorTextLight" />
 
         <Button
@@ -33,7 +33,7 @@
             android:layout_height="70dp"
             android:layout_weight="1"
             android:background="@color/colorTransparent"
-            android:text="Hot"
+            android:text="@string/hot"
             android:textColor="@color/colorTextLight" />
 
         <Button
@@ -42,7 +42,7 @@
             android:layout_height="70dp"
             android:layout_weight="1"
             android:background="@color/colorTransparent"
-            android:text="New"
+            android:text="@string/new_s"
             android:textColor="@color/colorTextLight" />
 
         <Button
@@ -51,7 +51,15 @@
             android:layout_height="70dp"
             android:layout_weight="1"
             android:background="@color/colorTransparent"
-            android:text="Login"
+            android:text="@string/login"
             android:textColor="@color/colorTextLight" />
-    </LinearLayout>
+
+        <ImageView
+            android:id="@+id/profile"
+            android:visibility="gone"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1" />
+</LinearLayout>
 

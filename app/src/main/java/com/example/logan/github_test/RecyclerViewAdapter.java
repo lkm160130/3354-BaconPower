@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
     private ArrayList<Song> songs;
-    private Context mContext;
+    private MainActivity mContext;
     private int activeHolderPosition = -1;
     MusicPlayer musicPlayer;
 
@@ -25,7 +25,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     OnBottomReachedListener onBottomReachedListener;
     
 
-    public RecyclerViewAdapter(final Context context, ArrayList<Song> songs, final MusicPlayer player){
+    public RecyclerViewAdapter(final MainActivity context, ArrayList<Song> songs, final MusicPlayer player){
         this.mContext = context;
         this.songs = songs;
         this.musicPlayer = player;
@@ -36,9 +36,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 activeHolderPosition = (int)v.getTag();
                 v.setBackgroundResource(R.color.colorPrimary);
                 notifyDataSetChanged();
-                ((MainActivity)context).songLoadingCircleView.setVisibility(View.VISIBLE);
-                ((MainActivity)context).durationText.setVisibility(View.GONE);
-                player.play(RecyclerViewAdapter.this.songs.get(activeHolderPosition));
+                context.songLoadingCircleView.setVisibility(View.VISIBLE);
+                context.durationText.setVisibility(View.GONE);
+                MusicPlayer.getInstance().play(RecyclerViewAdapter.this.songs.get(activeHolderPosition),context);
             }
         };
 

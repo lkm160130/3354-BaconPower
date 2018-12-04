@@ -34,7 +34,7 @@ class NetworkTools {
      * method must be run in a non UI thread
      * @param steemJ client
      * @param tag TAG_TRENDING, TAG_HOT, TAG_NEW, or TAG_FEED
-     * @param lastSong last song in list so that more songs can be loaded than the limit.
+     * @param lastSong last songLoading in list so that more songs can be loaded than the limit.
      *                     param can be null for fetching the first items
      * @param c android context
      * @return ArrayList of songs
@@ -77,7 +77,7 @@ class NetworkTools {
 
         boolean failedAdding;
         for (Discussion d: discussions) {
-            //prevent adding the same song as the last song in list
+            //prevent adding the same songLoading as the last songLoading in list
             if (lastSong == null || (!d.getPermlink().getLink().equals(lastSong.getPermlink().getLink()))) {
                 failedAdding = false;
                 Song song = new Song();
