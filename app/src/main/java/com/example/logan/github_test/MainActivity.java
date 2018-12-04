@@ -429,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     private void initRecyclerView(){
         songRecyclerView = findViewById(R.id.recycler_view);
-        adapter = new RecyclerViewAdapter(this, songs, MusicPlayer.getInstance());
+        adapter = new RecyclerViewAdapter(this, songs);
         adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
             @Override
             public void onBottomReached(int position) {

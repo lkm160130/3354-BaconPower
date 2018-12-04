@@ -1,5 +1,6 @@
 package com.example.logan.github_test;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,18 +17,14 @@ import java.util.ArrayList;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
     private ArrayList<Song> songs;
-    private MainActivity mContext;
     private int activeHolderPosition = -1;
-    MusicPlayer musicPlayer;
 
     private View.OnClickListener clickListener;
-    OnBottomReachedListener onBottomReachedListener;
-    
+    private OnBottomReachedListener onBottomReachedListener;
 
-    public RecyclerViewAdapter(final MainActivity context, ArrayList<Song> songs, final MusicPlayer player){
-        this.mContext = context;
+
+    RecyclerViewAdapter(final MainActivity context, ArrayList<Song> songs){
         this.songs = songs;
-        this.musicPlayer = player;
 
         clickListener = new View.OnClickListener() {
             @Override
@@ -48,10 +45,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.song_view, parent, false);
-        ViewHolder holder = new ViewHolder(view);
-        return holder;
+        return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         holder.albumImage.setImageResource(R.drawable.logo);
@@ -84,7 +81,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return songs.get(position).hashCode();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder{
 
         ImageView albumImage;
         TextView creatorName;
@@ -92,7 +89,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         RelativeLayout parentLayout;
 
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             albumImage = itemView.findViewById(R.id.albumCover);
             creatorName = itemView.findViewById(R.id.songCreator);
@@ -101,19 +98,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    public void resetActiveHolder(){
+    void resetActiveHolder(){
         activeHolderPosition = -1;
     }
-    public int getActiveHolderPosition(){
+
+    int getActiveHolderPosition(){
         return activeHolderPosition;
     }
-    public void setActiveHolderPosition(int activeHolderPosition){
+
+    void setActiveHolderPosition(int activeHolderPosition){
         this.activeHolderPosition = activeHolderPosition;
         notifyDataSetChanged();
     }
 
-
-    public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener){
+    void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener){
         this.onBottomReachedListener = onBottomReachedListener;
     }
 

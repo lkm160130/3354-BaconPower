@@ -11,12 +11,11 @@ public class Account {
         return userName;
     }
 
-    public void setUserName(String userName) {
+    void setUserName(String userName) {
         this.userName = userName;
     }
 
-
-    public String getImageURL(){
+    String getImageURL(){
         return PROFILE_IMAGE_SMALL_URL.replace("username",userName);
     }
 

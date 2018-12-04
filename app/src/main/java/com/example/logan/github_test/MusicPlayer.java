@@ -161,7 +161,7 @@ class MusicPlayer {
     /**
      * @param currentSongPlaying songLoading that has been loaded and started playing
      */
-    public void setCurrentSongPlaying(Song currentSongPlaying) {
+    private void setCurrentSongPlaying(Song currentSongPlaying) {
         this.currentSongPlaying = currentSongPlaying;
     }
 
@@ -205,14 +205,14 @@ class MusicPlayer {
     /**
      * @return if music player is set to repeat current song
      */
-    public boolean isOnRepeat() {
+    boolean isOnRepeat() {
         return onRepeat;
     }
 
     /**
      * @param onRepeat indicates if song should repeat
      */
-    public void setOnRepeat(boolean onRepeat) {
+    void setOnRepeat(boolean onRepeat) {
         this.onRepeat = onRepeat;
     }
 }

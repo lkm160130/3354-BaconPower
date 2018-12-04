@@ -5,6 +5,14 @@ import java.util.Date;
 import eu.bittrade.libs.steemj.base.models.AccountName;
 import eu.bittrade.libs.steemj.base.models.Permlink;
 
+
+/**
+ * Class that holds information for a song.
+ * Contains information such as title, image url,
+ * date, and permlink.
+ * Each item in recyclerview is generated from
+ * an instantiated Song class
+ */
 public class Song {
     private String title;
     private AccountName author;
@@ -14,22 +22,22 @@ public class Song {
     private String songURL;
     private int tag; //TAG_TRENDING, TAG_HOT, TAG_NEW, or TAG_FEED
 
-    public boolean isAccountFavoritedSong() {
+    boolean isAccountFavoritedSong() {
         return accountFavoritedSong;
     }
 
-    public void setAccountFavoritedSong(boolean accountFavoritedSong) {
+    void setAccountFavoritedSong(boolean accountFavoritedSong) {
         this.accountFavoritedSong = accountFavoritedSong;
     }
 
-    public boolean getAccountFavoritedSong(){
+    boolean getAccountFavoritedSong(){
         return  accountFavoritedSong;
     }
 
     private boolean accountFavoritedSong;
 
 
-    public int getTag() {
+    int getTag() {
         return tag;
     }
 
@@ -63,7 +71,7 @@ public class Song {
         this.imageURL = imageURL;
     }
 
-    public Permlink getPermlink() {
+    Permlink getPermlink() {
         return permlink;
     }
 
