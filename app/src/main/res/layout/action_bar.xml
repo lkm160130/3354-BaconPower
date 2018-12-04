@@ -16,7 +16,8 @@
         android:layout_marginRight="5dp"
         android:layout_weight="1"
         android:padding="0dp"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/logo"
+        android:onClick="topBarButtonClicked"/>
 
         <Button
             android:id="@+id/trending"
@@ -25,7 +26,8 @@
             android:layout_weight="1"
             android:background="@color/colorTransparent"
             android:text="@string/trending"
-            android:textColor="@color/colorTextLight" />
+            android:textColor="@color/colorTextLight"
+            android:onClick="topBarButtonClicked"/>
 
         <Button
             android:id="@+id/hot"
@@ -34,7 +36,8 @@
             android:layout_weight="1"
             android:background="@color/colorTransparent"
             android:text="@string/hot"
-            android:textColor="@color/colorTextLight" />
+            android:textColor="@color/colorTextLight"
+            android:onClick="topBarButtonClicked"/>
 
         <Button
             android:id="@+id/_new"
@@ -43,7 +46,8 @@
             android:layout_weight="1"
             android:background="@color/colorTransparent"
             android:text="@string/new_s"
-            android:textColor="@color/colorTextLight" />
+            android:textColor="@color/colorTextLight"
+            android:onClick="topBarButtonClicked"/>
 
         <Button
             android:id="@+id/login"
@@ -52,7 +56,8 @@
             android:layout_weight="1"
             android:background="@color/colorTransparent"
             android:text="@string/login"
-            android:textColor="@color/colorTextLight" />
+            android:textColor="@color/colorTextLight"
+            android:onClick="topBarButtonClicked"/>
 
         <ImageView
             android:id="@+id/profile"
@@ -60,6 +65,7 @@
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginRight="8dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="topBarButtonClicked"/>
 </LinearLayout>
 

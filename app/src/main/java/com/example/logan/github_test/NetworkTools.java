@@ -11,7 +11,6 @@ import java.util.List;
 
 import eu.bittrade.libs.steemj.SteemJ;
 import eu.bittrade.libs.steemj.apis.database.models.state.Discussion;
-import eu.bittrade.libs.steemj.base.models.AccountName;
 import eu.bittrade.libs.steemj.base.models.DiscussionQuery;
 import eu.bittrade.libs.steemj.base.models.VoteState;
 import eu.bittrade.libs.steemj.enums.DiscussionSortType;
@@ -92,7 +91,8 @@ class NetworkTools {
                 if (Tools.getAccountName(c)!=null) {
                     for (VoteState v : d.getActiveVotes()) {
                         if (v.getVoter().getName().equals(appAccountName)) {
-                            song.setAccountFavoritedSong(true);
+                            if (v.getPercent()>0)
+                                song.setAccountFavoritedSong(true);
                             break;
                         }
                     }

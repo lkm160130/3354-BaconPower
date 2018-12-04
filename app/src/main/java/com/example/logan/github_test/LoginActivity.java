@@ -6,15 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
 import java.security.InvalidKeyException;
-import java.util.ArrayList;
-import java.util.List;
-
-import eu.bittrade.libs.steemj.base.models.AccountName;
-import eu.bittrade.libs.steemj.configuration.SteemJConfig;
-import eu.bittrade.libs.steemj.enums.PrivateKeyType;
 
 public class LoginActivity extends AppCompatActivity {
     EditText usernameEditText;
@@ -35,10 +27,14 @@ public class LoginActivity extends AppCompatActivity {
 
 
         try {
-            Tools.loginIfPossible(this);
-            Tools.saveUserCredentials(username,password,this);
-            finish();
-            Toast.makeText(this,R.string.login_succeeded,Toast.LENGTH_SHORT).show();
+            Account account = Tools.loginIfPossible(username,password,this);
+            if (account!=null) {
+                Tools.saveUserCredentials(username, password, this);
+                setResult(RESULT_OK);
+                finish();
+                Toast.makeText(this, R.string.login_succeeded, Toast.LENGTH_SHORT).show();
+            }else
+                throw new InvalidKeyException();
         }catch (InvalidKeyException e){
             e.printStackTrace();
             Toast.makeText(this,R.string.login_failed,Toast.LENGTH_LONG).show();

@@ -12,18 +12,17 @@ import java.util.TimeZone;
 
 
 /**
- *
+ * class for playing, pausing, and getting information about playing songs
  */
 class MusicPlayer {
    private static MediaPlayer mediaPlayer = new MediaPlayer();
    private Song currentSongPlaying;
+   private boolean onRepeat;
 
    private static MusicPlayer musicPlayer;
-
-
    private MusicPlayer(){}
 
-   public static MusicPlayer getInstance(){
+   static MusicPlayer getInstance(){
        if (musicPlayer == null)
            musicPlayer = new MusicPlayer();
 
@@ -87,6 +86,20 @@ class MusicPlayer {
                     }
                 });
                 }
+        });
+
+        //when media finishes playing it either goess to the next song or repeats
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                Log.d("ds", "media source reached the end");
+                if (onRepeat) {
+                    mediaPlayer.seekTo(0);
+                    mediaPlayer.start();
+                }else {
+                    mainActivity.nextSong();
+                }
+            }
         });
 
         mediaPlayer.prepareAsync();
@@ -187,5 +200,19 @@ class MusicPlayer {
     void seekTo(int time) {
         if (mediaPlayer!=null)
             mediaPlayer.seekTo(time);
+    }
+
+    /**
+     * @return if music player is set to repeat current song
+     */
+    public boolean isOnRepeat() {
+        return onRepeat;
+    }
+
+    /**
+     * @param onRepeat indicates if song should repeat
+     */
+    public void setOnRepeat(boolean onRepeat) {
+        this.onRepeat = onRepeat;
     }
 }

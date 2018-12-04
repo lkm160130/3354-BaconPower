@@ -34,24 +34,34 @@ public class Tools {
         encryption.encryptString("privateKeyWif", privateKey);
     }
 
+    static Account loginIfPossible(String userName, String password, Context c) throws InvalidKeyException {
+        SteemJConfig myConfig = SteemJConfig.getInstance();
+        myConfig.setResponseTimeout(100000);
+        myConfig.setDefaultAccount(new AccountName(userName));
+        List<ImmutablePair<PrivateKeyType, String>> privateKeys = new ArrayList<>();
+        privateKeys.add(new ImmutablePair<>(PrivateKeyType.POSTING, password));
+
+        try {
+            myConfig.getPrivateKeyStorage().addAccount(myConfig.getDefaultAccount(), privateKeys);
+
+
+            Account a = new Account();
+            a.setUserName(getAccountName(c));
+            return a;
+        }catch (Exception e){
+            throw new InvalidKeyException();
+        }
+    }
+
     static Account loginIfPossible(Context c) throws InvalidKeyException {
         if (getAccountName(c)!=null && getUserPrivateKey(c)!=null){
-            SteemJConfig myConfig = SteemJConfig.getInstance();
-            myConfig.setResponseTimeout(100000);
-            myConfig.setDefaultAccount(new AccountName(getAccountName(c)));
-            List<ImmutablePair<PrivateKeyType, String>> privateKeys = new ArrayList<>();
-            privateKeys.add(new ImmutablePair<>(PrivateKeyType.POSTING, getUserPrivateKey(c)));
-
-            try {
-                myConfig.getPrivateKeyStorage().addAccount(myConfig.getDefaultAccount(), privateKeys);
-                Account a = new Account();
-                a.setUserName(getAccountName(c));
-                return a;
-            }catch (Exception e){
-                throw new InvalidKeyException();
-            }
-
+            return loginIfPossible(getAccountName(c),getUserPrivateKey(c),c);
         }
         return null;
+    }
+
+    static void forgetLogin(Context c){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(c);
+        sharedPref.edit().remove("username").apply();
     }
 }

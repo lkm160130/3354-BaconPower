@@ -3,10 +3,14 @@ package com.example.logan.github_test;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -30,7 +34,9 @@ import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+    final int REQUEST_LOGIN_CODE = 100;
+
     private ArrayList<Song> songs = new ArrayList<>();
     RecyclerView songRecyclerView;
     RecyclerViewAdapter adapter;
@@ -56,53 +62,6 @@ public class MainActivity extends AppCompatActivity {
 
     boolean seekingThroughTrack;
 
-    View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            System.out.println(R.id.LoginButton + " " + v.getId());
-            switch(v.getId()){
-                case R.id.login:
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                    break;
-                case R.id.hot:
-                    adapter.resetActiveHolder();
-                    hotButton.setTextColor(getResources().getColor(R.color.colorText));
-                    trendingButton.setTextColor(getResources().getColor(R.color.colorTextLight));
-                    newButton.setTextColor(getResources().getColor(R.color.colorTextLight));
-                    loadingCircleView.setVisibility(View.VISIBLE);
-                    getSongs(NetworkTools.TAG_HOT);
-                    break;
-                case R.id.trending:
-                    adapter.resetActiveHolder();
-                    trendingButton.setTextColor(getResources().getColor(R.color.colorText));
-                    hotButton.setTextColor(getResources().getColor(R.color.colorTextLight));
-                    newButton.setTextColor(getResources().getColor(R.color.colorTextLight));
-                    loadingCircleView.setVisibility(View.VISIBLE);
-                    getSongs(NetworkTools.TAG_TRENDING);
-
-                    break;
-                case R.id._new:
-                    adapter.resetActiveHolder();
-                    newButton.setTextColor(getResources().getColor(R.color.colorText));
-                    trendingButton.setTextColor(getResources().getColor(R.color.colorTextLight));
-                    hotButton.setTextColor(getResources().getColor(R.color.colorTextLight));
-                    loadingCircleView.setVisibility(View.VISIBLE);
-                    getSongs(NetworkTools.TAG_NEW);
-
-                    break;
-                case R.id.logo:
-                    adapter.resetActiveHolder();
-                    newButton.setTextColor(getResources().getColor(R.color.colorTextLight));
-                    trendingButton.setTextColor(getResources().getColor(R.color.colorTextLight));
-                    hotButton.setTextColor(getResources().getColor(R.color.colorTextLight));
-                    loadingCircleView.setVisibility(View.VISIBLE);
-                    getSongs(NetworkTools.TAG_FEED);
-                    break;
-            }
-        }
-    };
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,6 +81,51 @@ public class MainActivity extends AppCompatActivity {
         getSongs(NetworkTools.TAG_FEED);
     }
 
+    public void topBarButtonClicked(View v){
+        switch(v.getId()){
+            case R.id.login:
+                startActivityForResult(new Intent(MainActivity.this, LoginActivity.class),REQUEST_LOGIN_CODE);
+                break;
+            case R.id.profile:
+                showAccountPopup(v);
+                break;
+            case R.id.hot:
+                adapter.resetActiveHolder();
+                hotButton.setTextColor(getResources().getColor(R.color.colorText));
+                trendingButton.setTextColor(getResources().getColor(R.color.colorTextLight));
+                newButton.setTextColor(getResources().getColor(R.color.colorTextLight));
+                loadingCircleView.setVisibility(View.VISIBLE);
+                getSongs(NetworkTools.TAG_HOT);
+                break;
+            case R.id.trending:
+                adapter.resetActiveHolder();
+                trendingButton.setTextColor(getResources().getColor(R.color.colorText));
+                hotButton.setTextColor(getResources().getColor(R.color.colorTextLight));
+                newButton.setTextColor(getResources().getColor(R.color.colorTextLight));
+                loadingCircleView.setVisibility(View.VISIBLE);
+                getSongs(NetworkTools.TAG_TRENDING);
+
+                break;
+            case R.id._new:
+                adapter.resetActiveHolder();
+                newButton.setTextColor(getResources().getColor(R.color.colorText));
+                trendingButton.setTextColor(getResources().getColor(R.color.colorTextLight));
+                hotButton.setTextColor(getResources().getColor(R.color.colorTextLight));
+                loadingCircleView.setVisibility(View.VISIBLE);
+                getSongs(NetworkTools.TAG_NEW);
+
+                break;
+            case R.id.logo:
+                adapter.resetActiveHolder();
+                newButton.setTextColor(getResources().getColor(R.color.colorTextLight));
+                trendingButton.setTextColor(getResources().getColor(R.color.colorTextLight));
+                hotButton.setTextColor(getResources().getColor(R.color.colorTextLight));
+                loadingCircleView.setVisibility(View.VISIBLE);
+                getSongs(NetworkTools.TAG_FEED);
+                break;
+        }
+    }
+
     private void initMainLayout(){
         playBar = findViewById(R.id.play_bar);
         playBarSeekBar = findViewById(R.id.seekBar);
@@ -131,37 +135,34 @@ public class MainActivity extends AppCompatActivity {
 
     private void initButtos(){
         hotButton = findViewById(R.id.hot);
-        hotButton.setOnClickListener(clickListener);
         loginButton = findViewById(R.id.login);
-        loginButton.setOnClickListener(clickListener);
         newButton = findViewById(R.id._new);
-        newButton.setOnClickListener(clickListener);
         trendingButton = findViewById(R.id.trending);
-        trendingButton.setOnClickListener(clickListener);
         profileIcon = findViewById(R.id.profile);
-        findViewById(R.id.logo).setOnClickListener(clickListener);
     }
     private void initSteemJClient(){
         try {
             steemJClient = new SteemJ();
-
+            Log.d("ds","initSteemJClient");
             try {
                 loggedInAccount = Tools.loginIfPossible(this);
-                loginButton.setVisibility(View.GONE);
-                profileIcon.setVisibility(View.VISIBLE);
+                if (loggedInAccount!=null) {
+                    loginButton.setVisibility(View.GONE);
+                    profileIcon.setVisibility(View.VISIBLE);
 
-                Transformation transformation = new RoundedTransformationBuilder()
-                        .cornerRadiusDp(30)
-                        .oval(false)
-                        .build();
+                    Transformation transformation = new RoundedTransformationBuilder()
+                            .cornerRadiusDp(30)
+                            .oval(false)
+                            .build();
 
 
-                Picasso.get().load(loggedInAccount.getImageURL()).placeholder(R.drawable.login).transform(transformation).into(
-                        (profileIcon));
-
+                    Picasso.get().load(loggedInAccount.getImageURL()).transform(transformation).into(
+                            (profileIcon));
+                }
 
             }catch (Exception e){
                 e.printStackTrace();
+                Log.d("ds",e.getMessage());
             }
 
 
@@ -273,6 +274,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+        if (MusicPlayer.getInstance().isOnRepeat()){
+            ((ImageView)playBar.findViewById(R.id.repeatButton)).setImageResource(R.drawable.ic_repeat_on);
+        }else{
+            ((ImageView)playBar.findViewById(R.id.repeatButton)).setImageResource(R.drawable.ic_repeat);
+        }
+
         if (!MusicPlayer.getInstance().isPlaying()) {
             if (durationTimer!=null) {
                 durationTimer.cancel();
@@ -323,18 +330,11 @@ public class MainActivity extends AppCompatActivity {
                 MusicPlayer.getInstance().resume();
             }
 
-
-        updateMusicBar();
-        break;
+            updateMusicBar();
+            break;
         case R.id.next:
-
-                int nextIndex = (adapter.getActiveHolderPosition() + 1)% songs.size();
-                songLoadingCircleView.setVisibility(View.VISIBLE);
-                durationText.setVisibility(View.GONE);
-                MusicPlayer.getInstance().play(songs.get(nextIndex), this);
-                adapter.setActiveHolderPosition(nextIndex);
-
-        break;
+            nextSong();
+            break;
         case R.id.previous:
             int nextIndex2 = (adapter.getActiveHolderPosition() - 1)% songs.size();
             if(nextIndex2 < 0){
@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
             MusicPlayer.getInstance().play(songs.get(nextIndex2), this);
             adapter.setActiveHolderPosition(nextIndex2);
 
-        break;
+            break;
         case R.id.shuffle:
             Random rnd = new Random();
             int randomSongIndex = rnd.nextInt(songs.size());
@@ -355,20 +355,27 @@ public class MainActivity extends AppCompatActivity {
             adapter.setActiveHolderPosition(randomSongIndex);
             break;
         case R.id.favButton:
-                if (Tools.getAccountName(this)!=null) {
+                if (MusicPlayer.getInstance().getCurrentSongPlaying()!=null && Tools.getAccountName(this)!=null) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                Song s = MusicPlayer.getInstance().getCurrentSongPlaying();
-                                steemJClient.vote(s.getAuthor(), MusicPlayer.getInstance().getCurrentSongPlaying().getPermlink(), (short) 100);
-                                s.setAccountFavoritedSong(true);
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        updateMusicBar();
+                                        findViewById(R.id.favButton).setVisibility(View.GONE);
+                                        findViewById(R.id.favoriteProgressBar).setVisibility(View.VISIBLE);
                                     }
                                 });
+                                Song s = MusicPlayer.getInstance().getCurrentSongPlaying();
+                                if (s.isAccountFavoritedSong()) {
+                                    steemJClient.cancelVote(s.getAuthor(), MusicPlayer.getInstance().getCurrentSongPlaying().getPermlink());
+                                    s.setAccountFavoritedSong(false);
+                                }else {
+                                    steemJClient.vote(s.getAuthor(), MusicPlayer.getInstance().getCurrentSongPlaying().getPermlink(), (short) 100);
+                                    s.setAccountFavoritedSong(true);
+                                }
+
                             } catch (SteemCommunicationException e) {
                                 e.printStackTrace();
                             } catch (SteemResponseException e) {
@@ -376,17 +383,38 @@ public class MainActivity extends AppCompatActivity {
                             } catch (SteemInvalidTransactionException e) {
                                 e.printStackTrace();
                             }
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    findViewById(R.id.favButton).setVisibility(View.VISIBLE);
+                                    findViewById(R.id.favoriteProgressBar).setVisibility(View.GONE);
+                                    updateMusicBar();
+                                }
+                            });
+
                         }
                     }).start();
                 }else {
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    startActivityForResult(new Intent(MainActivity.this, LoginActivity.class), REQUEST_LOGIN_CODE);
                 }
 
-            break;
+                break;
+            case R.id.repeatButton:
+                MusicPlayer.getInstance().setOnRepeat(!MusicPlayer.getInstance().isOnRepeat());
+                updateMusicBar();
+                break;
     }
 
     }
 
+    public void nextSong(){
+        int nextIndex = (adapter.getActiveHolderPosition() + 1)% songs.size();
+        songLoadingCircleView.setVisibility(View.VISIBLE);
+        durationText.setVisibility(View.GONE);
+        MusicPlayer.getInstance().play(songs.get(nextIndex), this);
+        adapter.setActiveHolderPosition(nextIndex);
+    }
 
     private void initRecyclerView(){
         songRecyclerView = findViewById(R.id.recycler_view);
@@ -405,4 +433,42 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK){
+            switch (requestCode){
+
+                case REQUEST_LOGIN_CODE:
+                    //restart app to accommodate login changes
+                    restartActivity();
+                    break;
+            }
+        }
+    }
+
+    private void restartActivity() {
+        finish();
+        startActivity(new Intent(MainActivity.this, MainActivity.class));
+    }
+
+    public void showAccountPopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.account_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(this);
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.m_logout:
+                Tools.forgetLogin(this);
+                restartActivity();
+                return true;
+            default:
+                return false;
+        }
+    }
 }
