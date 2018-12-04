@@ -15,13 +15,20 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import eu.bittrade.libs.steemj.SteemJ;
+import eu.bittrade.libs.steemj.base.models.AccountName;
+import eu.bittrade.libs.steemj.configuration.SteemJConfig;
+import eu.bittrade.libs.steemj.enums.PrivateKeyType;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
+import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,8 +45,13 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout playBar;
     SeekBar playBarSeekBar;
     TextView durationText;
+    TextView songTitleText;
     MusicPlayer player;
     Timer durationTimer;
+
+    //TAG_TRENDING, TAG_HOT, TAG_NEW, or TAG_FEED
+    int currentTagSelected;
+    Song currentSongPlaying;
 
     boolean seekingThroughTrack;
 
@@ -58,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
                     b_new.setTextColor(getResources().getColor(R.color.colorTextLight));
                     loadingCircleView.setVisibility(View.VISIBLE);
                     getSongs(NetworkTools.TAG_HOT);
-
                     break;
                 case R.id.trending:
                     adapter.resetActiveHolder();
@@ -96,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d("DT","onCreate");
+        Log.d("ds","onCreate");
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         player = new MusicPlayer(this);
@@ -133,6 +144,15 @@ public class MainActivity extends AppCompatActivity {
     private void initSteemJClient(){
         try {
             steemJClient = new SteemJ();
+
+            try {
+                Tools.loginIfPossible(this);
+                b_login.setVisibility(View.GONE);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+
         } catch (SteemCommunicationException e) {
             e.printStackTrace();
         } catch (SteemResponseException e) {
@@ -146,11 +166,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    ArrayList<Song> temp = NetworkTools.getDsoundSongs(steemJClient, tag); //loading the song list takes time, temp holds new list while allowing us to keep using the
-                                                                                            //current list until the change needs to be made. Not doing this causes crash when user tries
-                                                                                            //to scroll while loading new songs.
-                    songs.clear();
+
+                    //loading the song list takes time, temp holds new list while allowing us to keep using the
+                    //current list until the change needs to be made. Not doing this causes crash when user tries
+                    //to scroll while loading new songs.
+                    ArrayList<Song> temp;
+
+                    //if some songs are already populated, load more songs after last song (continuous scrolling)
+                    if (currentTagSelected == tag && songs.size()>0 && songs.get(songs.size()-1).getTag()==tag){
+                        temp = NetworkTools.getDsoundSongs(steemJClient, tag, songs.get(songs.size()-1), MainActivity.this);
+                    }else {
+                        temp = NetworkTools.getDsoundSongs(steemJClient, tag, null, MainActivity.this);
+                        songs.clear();
+                    }
+
+
                     songs.addAll(temp);
+                    currentTagSelected = tag;
 
                         Log.d("sng", Integer.toString(songs.size()));
                     runOnUiThread(new Runnable() {
@@ -175,6 +207,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void initMusicBar(){
         songLoadingCircleView = findViewById(R.id.songProgressBar);
+        songTitleText = findViewById(R.id.songTitle);
+        //required for scrolling text
+        songTitleText.setSelected(true);
         playBarSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -191,20 +226,24 @@ public class MainActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 seekingThroughTrack = false;
 
-                if (MusicPlayer.mediaPlayer!=null && MusicPlayer.mediaPlayer.isPlaying()){
-                    MusicPlayer.mediaPlayer.seekTo(playBarSeekBar.getProgress()*1000);
+                if (!player.isMediaPlayerNull() && player.isPlaying()){
+                    player.seekTo(playBarSeekBar.getProgress()*1000);
                 }
             }
         });
     }
 
+    public void setCurrentSongPlaying(Song currentSongPlaying) {
+        this.currentSongPlaying = currentSongPlaying;
+    }
+
     public void updateMusicBar(){
-        if (MusicPlayer.mediaPlayer!=null)
+        if (!player.isMediaPlayerNull())
             playBar.setVisibility(View.VISIBLE);
         else
             return;
 
-        if (MusicPlayer.mediaPlayer.isPlaying()){
+        if (player.isPlaying()){
             songLoadingCircleView.setVisibility(View.GONE);
             durationText.setVisibility(View.VISIBLE);
             ((ImageButton)playBar.findViewById(R.id.pause_play_btn)).setImageResource(R.drawable.ic_pause);
@@ -212,8 +251,20 @@ public class MainActivity extends AppCompatActivity {
             ((ImageButton)playBar.findViewById(R.id.pause_play_btn)).setImageResource(R.drawable.ic_play_arrow);
         }
 
+        if (currentSongPlaying!=null){
+            songTitleText.setVisibility(View.VISIBLE);
+            songTitleText.setText(currentSongPlaying.getTitle());
 
-        if (!MusicPlayer.mediaPlayer.isPlaying()) {
+            if (currentSongPlaying.getAccountFavoritedSong())
+                playBar.findViewById(R.id.favButton).setBackgroundResource(R.drawable.ic_favorite);
+            else
+                playBar.findViewById(R.id.favButton).setBackgroundResource(R.drawable.ic_favorite_border);
+        }else {
+            songTitleText.setVisibility(View.GONE);
+        }
+
+
+        if (!player.isPlaying()) {
             if (durationTimer!=null) {
                 durationTimer.cancel();
                 durationTimer.purge();
@@ -233,13 +284,12 @@ public class MainActivity extends AppCompatActivity {
                         if (playBarSeekBar.getMax()!= player.song.getDuration())
                             playBarSeekBar.setMax(player.song.getDuration());
 
-                        if (MusicPlayer.mediaPlayer.isPlaying()){
-
+                        if (player.isPlaying()){
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     if (!seekingThroughTrack) {
-                                        playBarSeekBar.setProgress(MusicPlayer.mediaPlayer.getCurrentPosition() / 1000);
+                                        playBarSeekBar.setProgress(player.getCurrentPosition() / 1000);
                                         durationText.setText(player.getTimeString());
                                     }
                                 }
@@ -255,13 +305,13 @@ public class MainActivity extends AppCompatActivity {
     public void musicBarItemClicked(View v){
         switch(v.getId()) {
             case R.id.pause_play_btn:
-            if (MusicPlayer.mediaPlayer == null)
+            if (player.isMediaPlayerNull())
                 return;
 
-            if (MusicPlayer.mediaPlayer.isPlaying()) {
-                MusicPlayer.mediaPlayer.pause();
+            if (player.isPlaying()) {
+                player.pause();
             } else {
-                MusicPlayer.mediaPlayer.start();
+                player.resume();
             }
 
 
@@ -287,13 +337,37 @@ public class MainActivity extends AppCompatActivity {
             adapter.setActiveHolderPosition(nextIndex2);
 
         break;
-            case R.id.shuffle:
-                Random rnd = new Random();
-                int randomSongIndex = rnd.nextInt(songs.size());
-                songLoadingCircleView.setVisibility(View.VISIBLE);
-                durationText.setVisibility(View.GONE);
-                player.play(songs.get(randomSongIndex));
-                adapter.setActiveHolderPosition(randomSongIndex);
+        case R.id.shuffle:
+            Random rnd = new Random();
+            int randomSongIndex = rnd.nextInt(songs.size());
+            songLoadingCircleView.setVisibility(View.VISIBLE);
+            durationText.setVisibility(View.GONE);
+            player.play(songs.get(randomSongIndex));
+            adapter.setActiveHolderPosition(randomSongIndex);
+            break;
+        case R.id.favButton:
+                if (Tools.getAccountName(this)!=null) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Song s = currentSongPlaying;
+                                steemJClient.vote(s.getAuthor(), currentSongPlaying.getPermlink(), (short) 100);
+                                s.setAccountFavoritedSong(true);
+                            } catch (SteemCommunicationException e) {
+                                e.printStackTrace();
+                            } catch (SteemResponseException e) {
+                                e.printStackTrace();
+                            } catch (SteemInvalidTransactionException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                }else {
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                }
+
+            break;
     }
 
     }
@@ -302,8 +376,18 @@ public class MainActivity extends AppCompatActivity {
     private void initRecyclerView(){
         songRecyclerView = findViewById(R.id.recycler_view);
         adapter = new RecyclerViewAdapter(this, songs, player);
+        adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
+            @Override
+            public void onBottomReached(int position) {
+                Log.d("ds", "onBottomReached");
+                getSongs(currentTagSelected);
+            }
+        });
+
+
         songRecyclerView.setAdapter(adapter);
         songRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
 }

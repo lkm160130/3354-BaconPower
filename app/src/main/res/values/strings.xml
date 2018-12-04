@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">DSound Mobile</string>
+    <string name="login_failed">Login failed, Please make sure your private posting key is correct</string>
+    <string name="login_succeeded">Login succeeded</string>
 </resources>

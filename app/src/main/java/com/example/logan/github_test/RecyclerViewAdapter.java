@@ -22,6 +22,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     MusicPlayer musicPlayer;
 
     private View.OnClickListener clickListener;
+    OnBottomReachedListener onBottomReachedListener;
     
 
     public RecyclerViewAdapter(final Context context, ArrayList<Song> songs, final MusicPlayer player){
@@ -56,7 +57,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         holder.albumImage.setImageResource(R.drawable.logo);
         holder.songTitle.setText(songs.get(position).getTitle());
-        holder.creatorName.setText("@" + songs.get(position).getAuthor());
+        holder.creatorName.setText("@" + songs.get(position).getAuthor().getName());
 
         if(activeHolderPosition  == position){
             holder.parentLayout.setBackgroundResource(R.color.colorPrimary);
@@ -68,6 +69,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.parentLayout.setTag(position);
         holder.parentLayout.setOnClickListener(clickListener);
         Picasso.get().load(songs.get(position).getImageURL()).resize(400,400).into(holder.albumImage);
+
+        if (position == songs.size() - 1){
+            onBottomReachedListener.onBottomReached(position);
+        }
     }
 
     @Override
@@ -108,6 +113,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         notifyDataSetChanged();
     }
 
+
+    public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener){
+        this.onBottomReachedListener = onBottomReachedListener;
+    }
 
 
 }

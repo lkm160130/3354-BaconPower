@@ -2,13 +2,40 @@ package com.example.logan.github_test;
 
 import java.util.Date;
 
+import eu.bittrade.libs.steemj.base.models.AccountName;
+import eu.bittrade.libs.steemj.base.models.Permlink;
+
 public class Song {
     private String title;
-    private String author;
+    private AccountName author;
     private Date date;
-    private String permlink;
+    private Permlink permlink;
     private String imageURL;
     private String songURL;
+    private int tag; //TAG_TRENDING, TAG_HOT, TAG_NEW, or TAG_FEED
+
+    public boolean isAccountFavoritedSong() {
+        return accountFavoritedSong;
+    }
+
+    public void setAccountFavoritedSong(boolean accountFavoritedSong) {
+        this.accountFavoritedSong = accountFavoritedSong;
+    }
+
+    public boolean getAccountFavoritedSong(){
+        return  accountFavoritedSong;
+    }
+
+    private boolean accountFavoritedSong;
+
+
+    public int getTag() {
+        return tag;
+    }
+
+    void setTag(int tag) {
+        this.tag = tag;
+    }
 
     public int getDuration() {
         return duration;
@@ -20,27 +47,27 @@ public class Song {
 
     private int duration;
 
-    /*added*/ public String getSongURL(){
+    String getSongURL(){
         return songURL;
     }
 
-    /*added*/ public void setSongURL(String songURL){
+    void setSongURL(String songURL){
         this.songURL = songURL;
     }
 
-    public String getImageURL() {
+    String getImageURL() {
         return imageURL;
     }
 
-    public void setImageURL(String imageURL) {
+    void setImageURL(String imageURL) {
         this.imageURL = imageURL;
     }
 
-    public String getPermlink() {
+    public Permlink getPermlink() {
         return permlink;
     }
 
-    public void setPermlink(String permlink) {
+    void setPermlink(Permlink permlink) {
         this.permlink = permlink;
     }
 
@@ -52,11 +79,11 @@ public class Song {
         this.title = title;
     }
 
-    public String getAuthor() {
+    AccountName getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    void setAuthor(AccountName author) {
         this.author = author;
     }
 
