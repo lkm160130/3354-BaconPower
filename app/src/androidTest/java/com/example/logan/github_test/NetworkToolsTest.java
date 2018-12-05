@@ -25,12 +25,15 @@ public class NetworkToolsTest {
      new ActivityTestRule(MainActivity.class);
 
      MainActivity networkActivity;
-
+    ArrayList<Song> songs;
 
 
     @Before
     public void setUp() throws Exception {
-         networkActivity = nActivityRule.getActivity();
+        networkActivity = nActivityRule.getActivity();
+        networkActivity.getBaseContext();
+        songs = NetworkTools.getDsoundSongs(new SteemJ(), NetworkTools.TAG_TRENDING, null, networkActivity.getBaseContext());
+
     }
 
     @After
@@ -38,25 +41,45 @@ public class NetworkToolsTest {
     }
 
     @Test
-    public void getDsoundSongs() {
-        networkActivity.getBaseContext();
-        try {
-            ArrayList<Song> songs = NetworkTools.getDsoundSongs(new SteemJ(), NetworkTools.TAG_TRENDING, null, networkActivity.getBaseContext());
-            assertNotNull(songs);
-            for(int i = 0; i < songs.size(); i++){
-                assertNotNull(songs.get(i));
-                assertTrue(songs.get(i) instanceof Song);
-                assertNotNull(songs.get(i).getAuthor());
-                assertNotNull(songs.get(i).getImageURL());
-                assertNotNull(songs.get(i).getSongURL());
-                assertNotNull(songs.get(i).getTitle());
-            }
-
-        } catch (SteemResponseException e) {
-            e.printStackTrace();
-        } catch (SteemCommunicationException e) {
-            e.printStackTrace();
+    public void getDsoundSongsSongsArrayNotNull() {
+           assertNotNull(songs);
+    }
+    @Test
+    public void getDsoundSongsSongsNotNull() {
+        for(int i = 0; i < songs.size(); i++){
+            assertNotNull(songs.get(i));
         }
+    }
+    @Test
+    public void getDsoundSongsInstanceOfSong() {
+        for(int i = 0; i < songs.size(); i++){
+            assertTrue(songs.get(i) instanceof Song);
 
+        }
+    }
+    @Test
+    public void getDsoundSongsHasAuthor() {
+        for(int i = 0; i < songs.size(); i++){
+            assertNotNull(songs.get(i).getAuthor());
+        }
+    }
+    @Test
+    public void getDsoundSongsHasImageURL() {
+        for(int i = 0; i < songs.size(); i++){
+            assertNotNull(songs.get(i).getImageURL());
+        }
+    }
+    @Test
+    public void getDsoundSongsHasSongURL() {
+        for(int i = 0; i < songs.size(); i++){
+            assertNotNull(songs.get(i).getSongURL());
+        }
+    }
+    @Test
+    public void getDsoundSongsHasSongTitle() {
+        for(int i = 0; i < songs.size(); i++){
+            assertNotNull(songs.get(i).getTitle());
+        }
     }
 }
+
