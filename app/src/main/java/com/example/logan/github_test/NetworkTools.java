@@ -21,6 +21,8 @@ import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 class NetworkTools extends AppCompatActivity {
 
     private static String IPFS_URL = "https://gateway.ipfs.io/ipfs/";
+
+    // each integer variable represents the user's song list sort preference:
     static final int TAG_TRENDING = 0;
     static final int TAG_HOT = 1;
     static final int TAG_NEW = 2;
@@ -57,7 +59,9 @@ class NetworkTools extends AppCompatActivity {
 
         discussionQuery.setLimit(SONG_RETRIEVE_LIMIT);
 
-        List<Discussion> discussions ;
+        List<Discussion> discussions;
+
+        // sort the discussions list by user preference:
         switch (tag){
             case TAG_TRENDING:
                  discussions = steemJ.getDiscussionsBy(discussionQuery, DiscussionSortType.GET_DISCUSSIONS_BY_TRENDING);
@@ -68,6 +72,7 @@ class NetworkTools extends AppCompatActivity {
             case TAG_NEW:
                 discussions = steemJ.getDiscussionsBy(discussionQuery, DiscussionSortType.GET_DISCUSSIONS_BY_CREATED);
                 break;
+                // case TAG_FEED; this list is the default sorting list when the user first opens the app
             default:
                 discussions = steemJ.getDiscussionsBy(discussionQuery, DiscussionSortType.GET_DISCUSSIONS_BY_FEED);
                 break;
