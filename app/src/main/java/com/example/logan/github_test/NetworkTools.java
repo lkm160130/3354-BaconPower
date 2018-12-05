@@ -1,6 +1,7 @@
 package com.example.logan.github_test;
 
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -17,7 +18,7 @@ import eu.bittrade.libs.steemj.enums.DiscussionSortType;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
-class NetworkTools {
+class NetworkTools extends AppCompatActivity {
 
     private static String IPFS_URL = "https://gateway.ipfs.io/ipfs/";
     static final int TAG_TRENDING = 0;
