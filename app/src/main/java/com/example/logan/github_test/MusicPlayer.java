@@ -47,6 +47,8 @@ class MusicPlayer {
 
             @Override
             public void run() {
+                // if the media player has a null value, you cannot run the song
+                // if the release of the song has any problems, then the exceptions are caught:
                 if (mp != null) {
                     try {
                         Log.d("ds","Releasing " +mp);
@@ -66,6 +68,8 @@ class MusicPlayer {
 
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+        // attempt to get the song's URL; if it fails, throw an exception
         try {
             mediaPlayer.setDataSource(song.getSongURL());
         } catch (IOException e) {
