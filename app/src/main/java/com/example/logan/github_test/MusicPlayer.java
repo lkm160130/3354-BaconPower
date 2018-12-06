@@ -70,43 +70,48 @@ class MusicPlayer {
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         // attempt to get the song's URL; if it fails, throw an exception
-        try {
-            mediaPlayer.setDataSource(song.getSongURL());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        if (song.getSongURL()!=null) {
+            boolean didSetSource = false;
+            try {
+                mediaPlayer.setDataSource(song.getSongURL());
+                didSetSource = true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-
-        //when media is loaded it will start playing and update the ui
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mediaPlayer) {
-                mediaPlayer.start();
-                mainActivity.runOnUiThread(new Runnable() {
+            if (didSetSource) {
+                //when media is loaded it will start playing and update the ui
+                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
-                    public void run() {
-                        setCurrentSongPlaying(song);
-                        mainActivity.updateMusicBar();
+                    public void onPrepared(MediaPlayer mediaPlayer) {
+                        mediaPlayer.start();
+                        mainActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setCurrentSongPlaying(song);
+                                mainActivity.updateMusicBar();
+                            }
+                        });
                     }
                 });
-                }
-        });
 
-        //when media finishes playing it either goess to the next song or repeats
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                Log.d("ds", "media source reached the end");
-                if (onRepeat) {
-                    mediaPlayer.seekTo(0);
-                    mediaPlayer.start();
-                }else {
-                    mainActivity.nextSong();
-                }
+                //when media finishes playing it either goess to the next song or repeats
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        Log.d("ds", "media source reached the end");
+                        if (onRepeat) {
+                            mediaPlayer.seekTo(0);
+                            mediaPlayer.start();
+                        } else {
+                            mainActivity.nextSong();
+                        }
+                    }
+                });
+
+                mediaPlayer.prepareAsync();
             }
-        });
-
-        mediaPlayer.prepareAsync();
+        }
     }
 
 
