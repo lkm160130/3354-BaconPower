@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -106,17 +107,40 @@ class NetworkTools extends AppCompatActivity {
                 }
 
                 Log.d("dsjson", d.getJsonMetadata());
+                JSONObject jObj = null;
+                if (d.getJsonMetadata()!=null) {
+                    try {
+                        jObj = new JSONObject(d.getJsonMetadata());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-                try {
+                if (jObj!=null) {
+                    //Get all absolute required tags for song
+                    //if any fail then don't add to list of songs
+                    try {
+                        song.setImageURL(IPFS_URL + jObj.getJSONObject("audio").getJSONObject("files").getString("cover"));
+                        song.setSongURL(IPFS_URL + jObj.getJSONObject("audio").getJSONObject("files").getString("sound"));
+                        song.setDuration((int) jObj.getJSONObject("audio").getDouble("duration"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        failedAdding = true;
+                    }
 
-                    JSONObject jObj = new JSONObject(d.getJsonMetadata());
-
-                    song.setImageURL(IPFS_URL + jObj.getJSONObject("audio").getJSONObject("files").getString("cover"));
-                    song.setSongURL(IPFS_URL + jObj.getJSONObject("audio").getJSONObject("files").getString("sound"));
-                    song.setDuration((int) jObj.getJSONObject("audio").getDouble("duration"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    failedAdding = true;
+                    //get direct link to audio if provided by dsound. May load songs faster that standard IPFS gateway
+                    try {
+                        JSONArray arr = jObj.getJSONArray("links");
+                        for (int i = 0; i < arr.length(); i++){
+                            if (arr.getString(i).contains("/ipfs/")){
+                                Log.d("ds", arr.getString(i));
+                                song.setDsoundSongURL(arr.getString(i));
+                                break;
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 if (!failedAdding)

@@ -73,7 +73,14 @@ class MusicPlayer {
         if (song.getSongURL()!=null) {
             boolean didSetSource = false;
             try {
-                mediaPlayer.setDataSource(song.getSongURL());
+                //if dsound is providing a gateway for song then use it. If not, use default IPFS gateway
+                if (song.getDsoundSongURL()!=null){
+                    mediaPlayer.setDataSource(song.getDsoundSongURL());
+                    Log.d("ds","loading "+song.getDsoundSongURL());
+                }else {
+                    mediaPlayer.setDataSource(song.getSongURL());
+                    Log.d("ds","loading "+song.getSongURL());
+                }
                 didSetSource = true;
             } catch (IOException e) {
                 e.printStackTrace();

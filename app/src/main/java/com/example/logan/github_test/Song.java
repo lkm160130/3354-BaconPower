@@ -20,7 +20,10 @@ public class Song {
     private Permlink permlink;
     private String imageURL;
     private String songURL;
+    private String dsoundSongURL;
     private int tag; //TAG_TRENDING, TAG_HOT, TAG_NEW, or TAG_FEED
+    private int duration;
+
 
     boolean isAccountFavoritedSong() {
         return accountFavoritedSong;
@@ -53,7 +56,13 @@ public class Song {
         this.duration = duration;
     }
 
-    private int duration;
+    public String getDsoundSongURL() {
+        return dsoundSongURL;
+    }
+
+    public void setDsoundSongURL(String dsoundSongURL) {
+        this.dsoundSongURL = dsoundSongURL;
+    }
 
     String getSongURL(){
         return songURL;
