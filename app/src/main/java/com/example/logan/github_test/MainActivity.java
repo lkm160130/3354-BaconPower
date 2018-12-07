@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
         initMainLayout();
         initRecyclerView();
-        initButtos();
+        initButons();
         initSteemJClient();
         initMusicBar();
         updateMusicBar();
@@ -81,6 +81,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         getSongs(NetworkTools.TAG_FEED);
     }
 
+    /**
+     * Deals with clicks on the top bar buttons
+     * @param v provided by onClick
+     */
     public void topBarButtonClicked(View v){
         switch(v.getId()){
             case R.id.login:
@@ -126,20 +130,28 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
     }
 
+    /**
+     * initialize non-button view variables for main layout
+     */
     private void initMainLayout(){
-        playBar = findViewById(R.id.play_bar);
-        playBarSeekBar = findViewById(R.id.seekBar);
-        durationText = findViewById(R.id.duration);
         loadingCircleView = findViewById(R.id.progressBar);
     }
 
-    private void initButtos(){
+    /**
+     * Initialize button views of main layout
+     */
+    private void initButons(){
         hotButton = findViewById(R.id.hot);
         loginButton = findViewById(R.id.login);
         newButton = findViewById(R.id._new);
         trendingButton = findViewById(R.id.trending);
         profileIcon = findViewById(R.id.profile);
     }
+
+
+    /**
+     * Initializes SteemJ client, logs user into app, and loads profile icon after login
+     */
     private void initSteemJClient(){
         try {
             steemJClient = new SteemJ();
@@ -174,6 +186,11 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
 
+    /**
+     * Loads songs based on given tag. If some are already loaded, it will load 20 more
+     * Will also select active song in recycler view
+     * @param tag TAG_TRENDING, TAG_HOT, TAG_NEW, or TAG_FEED
+     */
     private void getSongs(final int tag){
         Runnable fetch = new Runnable() {
             @Override
@@ -229,7 +246,14 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
 
+    /**
+     * Initialize views related tothe bottom music bar
+     * Also sets up a listener for the seekbar
+     */
     public void initMusicBar(){
+        playBar = findViewById(R.id.play_bar);
+        playBarSeekBar = findViewById(R.id.seekBar);
+        durationText = findViewById(R.id.duration);
         songLoadingCircleView = findViewById(R.id.songProgressBar);
         songTitleText = findViewById(R.id.songTitle);
         //required for scrolling text
@@ -258,6 +282,12 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
 
+    /**
+     * Update how the music bar looks
+     * Sets things like the title of song and button states
+     * Also a scheduled timer is set to update the seekbar progress of song
+     * Method should be called as soon as a song starts playing
+     */
     public void updateMusicBar(){
         if (!MusicPlayer.getInstance().isMediaPlayerNull())
             playBar.setVisibility(View.VISIBLE);
@@ -329,6 +359,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
 
+    /**
+     * Deals with music bar button clicks
+     * @param v provided by onClick
+     */
     public void musicBarItemClicked(View v){
         switch(v.getId()) {
             case R.id.pause_play_btn:
@@ -419,6 +453,9 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     }
 
+    /**
+     * Starts loading the next song. Sets new index and recycler view position
+     */
     public void nextSong(){
         int nextIndex = (adapter.getActiveHolderPosition() + 1)% songs.size();
         songLoadingCircleView.setVisibility(View.VISIBLE);
@@ -427,6 +464,9 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         adapter.setActiveHolderPosition(nextIndex);
     }
 
+    /**
+     * Sets up view for the list of songs
+     */
     private void initRecyclerView(){
         songRecyclerView = findViewById(R.id.recycler_view);
         adapter = new RecyclerViewAdapter(this, songs);
@@ -463,6 +503,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         startActivity(new Intent(MainActivity.this, MainActivity.class));
     }
 
+    /**
+     * Opens a menu for the logged in account
+     * @param v anchor view
+     */
     public void showAccountPopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();
@@ -471,6 +515,11 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         popup.show();
     }
 
+    /**
+     * Deals with the menu selection click of account popup
+     * @param item menu item
+     * @return true if click was managed
+     */
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
