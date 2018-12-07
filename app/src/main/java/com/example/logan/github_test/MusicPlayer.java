@@ -116,6 +116,14 @@ class MusicPlayer {
                     }
                 });
 
+                mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                    @Override
+                    public boolean onError(MediaPlayer mp, int what, int extra) {
+                        Log.d("ds" , "Media Error code " +what +","+extra);
+                        return false;
+                    }
+                });
+
                 mediaPlayer.prepareAsync();
             }
         }

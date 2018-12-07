@@ -21,8 +21,8 @@ import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
 class NetworkTools extends AppCompatActivity {
 
-    private static String IPFS_URL = "https://cloudflare-ipfs.com/ipfs/";
-            //"https://gateway.ipfs.io/ipfs/";
+    private static String IPFS_URL = //"https://cloudflare-ipfs.com/ipfs/";
+            "https://gateway.ipfs.io/ipfs/";
 
     // each integer variable represents the user's song list sort preference:
     static final int TAG_TRENDING = 0;
